@@ -10,6 +10,9 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -25,6 +28,17 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        int w = 30;
+        List<Integer> RR = new ArrayList<Integer>();
+        RR.add(1);
+        RR.add(2);
+        RR.add(3);
+
+        List<Integer> D = new ArrayList<Integer>();
+        D.add(0);
+        D.add(0);
+        D.add(0);
 
     }
 
