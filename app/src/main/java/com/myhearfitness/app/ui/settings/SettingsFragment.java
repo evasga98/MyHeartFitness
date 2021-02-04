@@ -1,4 +1,4 @@
-package com.myhearfitness.app.ui.profile;
+package com.myhearfitness.app.ui.settings;
 
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,24 +17,24 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.myhearfitness.app.R;
 
-public class EditProfileFragment extends Fragment {
+public class SettingsFragment extends Fragment {
 
     EditText firstName;
     EditText lastName;
 
     Button register;
 
-    private EditProfileViewModel editProfileViewModel;
+    private SettingsViewModel settingsViewModel;
 
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        editProfileViewModel =
-                ViewModelProviders.of(this).get(EditProfileViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_edit_profile, container, false);
+        settingsViewModel =
+                ViewModelProviders.of(this).get(SettingsViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_settings, container, false);
         final TextView textView = root.findViewById(R.id.text_edit);
-        editProfileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        settingsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {
                 textView.setText(s);

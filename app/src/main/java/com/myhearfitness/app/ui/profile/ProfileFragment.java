@@ -15,6 +15,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.myhearfitness.app.R;
+import com.myhearfitness.app.ui.settings.SettingsFragment;
 
 public class ProfileFragment extends Fragment {
 
@@ -39,7 +40,7 @@ public class ProfileFragment extends Fragment {
             public void onClick(View v) {
 
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, new EditProfileFragment());
+                transaction.replace(R.id.nav_host_fragment, new SettingsFragment());
                 transaction.addToBackStack(null);
                 transaction.commit();
 
