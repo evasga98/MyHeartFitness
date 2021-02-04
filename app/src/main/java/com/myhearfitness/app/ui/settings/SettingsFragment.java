@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 
 public class SettingsFragment extends Fragment {
@@ -49,7 +50,10 @@ public class SettingsFragment extends Fragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkData();
+                boolean isValid = checkData();
+                if(isValid){
+                    ((MainActivity)getActivity()).selectItem(R.id.navigation_profile);
+                }
             }
         });
 
@@ -57,14 +61,15 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
-    public void checkData(){
+    public boolean checkData(){
         if (isEmpty(firstName)) {
             firstName.setError("First name is required!");
+            if (isEmpty(lastName)) {
+                lastName.setError("Last name is required!");
+            }
+            return false;
         }
-        if (isEmpty(lastName)) {
-            lastName.setError("Last name is required!");
-        }
-
+        return true;
     }
 
     boolean isEmpty(EditText text) {
