@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -17,6 +18,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 import com.myhearfitness.app.ui.profile.ProfileFragment;
 
@@ -68,6 +70,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        Button button_notify =  root.findViewById(R.id.button_notify);
+        button_notify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                try {
+//                    TimeUnit.SECONDS.sleep(10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+                int reqCode = 1;
+                Intent intent = new Intent( ((MainActivity)getActivity()).getApplicationContext(), MainActivity.class);
+                ((MainActivity)getActivity()).showNotification("Title", "This is the message to display", intent, reqCode);
+            }
+        });
         return root;
     }
 
