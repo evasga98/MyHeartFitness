@@ -27,8 +27,6 @@ public class SettingsFragment extends Fragment {
 
     private SettingsViewModel settingsViewModel;
 
-
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         settingsViewModel =
@@ -69,6 +67,7 @@ public class SettingsFragment extends Fragment {
             }
             return false;
         }
+        ((MainActivity)getActivity()).setUserData(firstName.getText().toString(), lastName.getText().toString());
         return true;
     }
 

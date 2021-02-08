@@ -10,7 +10,7 @@ public class SettingsViewModel extends ViewModel {
 
     public SettingsViewModel() {
         mText = new MutableLiveData<>();
-        //mText.setValue("This is edit profile fragment");
+        mText.setValue("This is edit profile fragment");
     }
 
     public LiveData<String> getText() {

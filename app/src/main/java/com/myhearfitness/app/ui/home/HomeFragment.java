@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
         });
 
         //Show username
-        textView.append("Eva"); //poor and weak
+        textView.append(((MainActivity)getActivity()).getUserData()); //poor and weak
 
         final FloatingActionButton fab = root.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +80,7 @@ public class HomeFragment extends Fragment {
 //                    e.printStackTrace();
 //                }
                 int reqCode = 1;
-                Intent intent = new Intent( ((MainActivity)getActivity()).getApplicationContext(), MainActivity.class);
+                Intent intent = new Intent( getActivity().getApplicationContext(), MainActivity.class);
                 ((MainActivity)getActivity()).showNotification("Title", "This is the message to display", intent, reqCode);
             }
         });

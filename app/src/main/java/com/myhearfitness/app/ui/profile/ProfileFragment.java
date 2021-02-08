@@ -47,6 +47,10 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+        String name = ((MainActivity)getActivity()).getUserData();
+        textView.append(name);
+
         return root;
     }
 }

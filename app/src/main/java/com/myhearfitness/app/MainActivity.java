@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.RingtoneManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
                 this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
     }
 
     public void showNotification(String title, String message, Intent intent, int reqCode) {
@@ -61,5 +63,19 @@ public class MainActivity extends AppCompatActivity {
         navView.getMenu().performIdentifierAction(id, 0);
 
     }
+
+    public void setUserData(String name, String surname){
+        SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("name", name);
+        editor.putString("surname", surname);
+        editor.commit();
+    }
+
+    public String getUserData(){
+        SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
+        String name = sharedPreferences.getString("name", "hola");
+        return name;
+}
 
 }
