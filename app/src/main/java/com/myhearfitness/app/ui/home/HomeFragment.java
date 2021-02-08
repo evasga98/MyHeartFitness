@@ -40,7 +40,7 @@ public class HomeFragment extends Fragment {
         });
 
         //Show username
-        textView.append(((MainActivity)getActivity()).getUserData()); //poor and weak
+        //textView.append(((MainActivity)getActivity()).getUserData()); //poor and weak
 
         final FloatingActionButton fab = root.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -35,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
                 this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
-
     }
 
     public void showNotification(String title, String message, Intent intent, int reqCode) {
@@ -64,18 +63,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setUserData(String name, String surname){
+    public void setUserData(String name, String lastname){
         SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("name", name);
-        editor.putString("surname", surname);
+        editor.putString("lastname", lastname);
         editor.commit();
     }
 
-    public String getUserData(){
+    public String[] getUserData(){
         SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", "hola");
-        return name;
+        String name = sharedPreferences.getString("name", " ");
+        String lastname = sharedPreferences.getString("lastname", " ");
+        
+        String [] data = {name, lastname};
+        return data;
 }
 
 }
