@@ -31,7 +31,7 @@ public class SettingsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         settingsViewModel =
                 ViewModelProviders.of(this).get(SettingsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_settings, container, false);
+        final View root = inflater.inflate(R.layout.fragment_settings, container, false);
         final TextView textView = root.findViewById(R.id.text_edit);
         settingsViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
@@ -54,8 +54,6 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
-
-
         return root;
     }
 

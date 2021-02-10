@@ -40,6 +40,8 @@
         android:ems="15"
         android:hint="Birthday"
         android:inputType="date"
+        android:focusable="false"
+        android:clickable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
