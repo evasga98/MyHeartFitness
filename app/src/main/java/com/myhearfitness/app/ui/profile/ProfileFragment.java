@@ -1,10 +1,13 @@
 package com.myhearfitness.app.ui.profile;
 
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,9 +29,9 @@ public class ProfileFragment extends Fragment {
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        String[] data = ((MainActivity)getActivity()).getUserData();
+        String name = ((MainActivity)getActivity()).getUserData("name");
         final TextView text_name = root.findViewById(R.id.text_name);
-        text_name.setText(data[0]);
+        text_name.setText(name);
 //        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
 //            public void onChanged(@Nullable String s) {
@@ -37,15 +40,20 @@ public class ProfileFragment extends Fragment {
 //                textView.append(name);
 //            }
 //        });
-
+        String lastname = ((MainActivity)getActivity()).getUserData("lastname");
         final TextView text_lastname = root.findViewById(R.id.text_lastname);
-        text_lastname.setText(data[1]);
+        text_lastname.setText(lastname);
 //        profileViewModel.getText2().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
 //            public void onChanged(@Nullable String s) {
 //                textView2.setText(s);
 //            }
 //        });
+
+        ImageView imageView = root.findViewById(R.id.image_profile);
+        String path = ((MainActivity)getActivity()).getUserData("picture");
+        Uri uri = Uri.parse(path);
+        imageView.setImageURI(uri);
 
         Button button =  root.findViewById(R.id.edit_button);
         button.setOnClickListener(new View.OnClickListener() {
@@ -60,8 +68,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
-
         return root;
     }
+
 }

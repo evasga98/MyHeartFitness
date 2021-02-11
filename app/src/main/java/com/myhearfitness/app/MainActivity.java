@@ -63,21 +63,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setUserData(String name, String lastname){
+    public void setUserData(String key, String value){
         SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("name", name);
-        editor.putString("lastname", lastname);
+        editor.putString(key, value);
         editor.commit();
     }
 
-    public String[] getUserData(){
+    public String getUserData(String key){
         SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-        String name = sharedPreferences.getString("name", " ");
-        String lastname = sharedPreferences.getString("lastname", " ");
-        
-        String [] data = {name, lastname};
-        return data;
+        String value = sharedPreferences.getString(key, " ");
+        return value;
 }
 
 }
