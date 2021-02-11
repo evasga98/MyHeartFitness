@@ -4,7 +4,9 @@ The objective is to create a simple and user-friendly application for Android de
 
 ### To-Do
 - [x] Basic app. 
-- [ ] Add contents and app visualization.
+- [x] Store user data.
+- [x] Show user data.
+- [ ] Send notifications to the user..
 - [ ] Read ECG from pdf file.
 - [ ] Apply SRQA to the ECG.
-- [ ] Show results to the user.
+
