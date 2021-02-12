@@ -7,6 +7,7 @@ The objective is to create a simple and user-friendly application for Android de
 - [x] Store user data.
 - [x] Show user data.
 - [x] Send notifications to the user.
+- [x] Use SQLite to store user data.
 - [ ] Read ECG from pdf file.
 - [ ] Apply SRQA to the ECG.
 
