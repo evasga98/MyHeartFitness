@@ -44,12 +44,6 @@ public class ProfileFragment extends Fragment {
         String lastname = ((MainActivity)getActivity()).getUserData("lastname");
         final TextView text_lastname = root.findViewById(R.id.text_lastname);
         text_lastname.setText(lastname);
-//        profileViewModel.getText2().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView2.setText(s);
-//            }
-//        });
 
         ImageView imageView = root.findViewById(R.id.image_profile);
         Bitmap bmp = ((MainActivity)getActivity()).getBitmap();

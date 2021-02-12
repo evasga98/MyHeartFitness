@@ -38,14 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
         db = this.openOrCreateDatabase("myheartfitness.db", Context.MODE_PRIVATE,null);
         db.execSQL("CREATE TABLE IF NOT EXISTS UserData(username VARCHAR,password VARCHAR);");
-        // db.execSQL("DROP TABLE ProfilePic;");
         db.execSQL("CREATE TABLE IF NOT EXISTS ProfilePic(id INTEGER PRIMARY KEY, data BLOB);");
-        db.execSQL("INSERT INTO UserData VALUES('admin','admin');");
 
-        Cursor resultSet = db.rawQuery("Select * from UserData",null);
-        resultSet.moveToFirst();
-        String username = resultSet.getString(0);
-        String password = resultSet.getString(1);
+        Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
+        setUserPicture(imageUri);
 
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
@@ -97,12 +93,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void storeBitmap(Bitmap bmp){
+        int index;
+        Cursor resultSet = db.rawQuery("SELECT * FROM ProfilePic WHERE   ID = (SELECT MAX(ID)  FROM ProfilePic)", null);
+        resultSet.moveToFirst();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
         byte[] img = bos.toByteArray();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put("data", img);
-        db.replace("ProfilePic", null, contentValues);
+        //Check length of table
+        try {
+            index = resultSet.getInt(0);
+        }
+        catch (Exception e){System.out.println("New value");
+            index = 0;
+        }
+
+        //Delete previous profile pic
+        if (index >= 1) {
+            db.update("ProfilePic", contentValues, "id = 1", null);
+        }
+        else{
+            db.replace("ProfilePic", null, contentValues);
+        }
+
     }
 
     public Bitmap getBitmap(){
