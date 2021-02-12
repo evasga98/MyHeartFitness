@@ -24,6 +24,7 @@ public class SettingsFragment extends Fragment {
     EditText lastName;
     Button register;
     Button upload;
+    EditText profilepic;
     ImageView image;
 
     private SettingsViewModel settingsViewModel;
@@ -45,7 +46,7 @@ public class SettingsFragment extends Fragment {
         lastName = root.findViewById(R.id.lastName);
         register = root.findViewById(R.id.button_save);
         upload = root.findViewById(R.id.button_upload);
-        image = root.findViewById(R.id.imageView2);
+        profilepic = root.findViewById(R.id.picture);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,18 +75,20 @@ public class SettingsFragment extends Fragment {
         super.onActivityResult(reqCode, resCode, data);
         if (reqCode == 1 && data != null) {
             Uri selectedFile = data.getData();
-            ((MainActivity)getActivity()).setUserPicture(selectedFile);
+            boolean success = ((MainActivity)getActivity()).setUserPicture(selectedFile);
+
+            if (success) profilepic.append(" "+ "\u2714");
         }
     }
 
     public boolean checkData(){
-        if (isEmpty(firstName)) {
-            firstName.setError("First name is required!");
-            if (isEmpty(lastName)) {
-                lastName.setError("Last name is required!");
-            }
-            return false;
-        }
+//        if (isEmpty(firstName)) {
+//            firstName.setError("First name is required!");
+//            if (isEmpty(lastName)) {
+//                lastName.setError("Last name is required!");
+//            }
+//            return false;
+//        }
         ((MainActivity)getActivity()).setUserData("name", firstName.getText().toString());
         ((MainActivity)getActivity()).setUserData("lastname", lastName.getText().toString());
         return true;

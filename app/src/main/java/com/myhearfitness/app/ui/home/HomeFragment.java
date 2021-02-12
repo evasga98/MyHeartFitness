@@ -1,6 +1,7 @@
 package com.myhearfitness.app.ui.home;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -56,6 +58,10 @@ public class HomeFragment extends Fragment {
 //                        .setAction("Action", null).show();
             }
         });
+
+        ImageView imageView = root.findViewById(R.id.imageView);
+        Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
+        imageView.setImageBitmap(bmp);
 
         ImageButton button =  root.findViewById(R.id.button_profile);
         button.setOnClickListener(new View.OnClickListener() {

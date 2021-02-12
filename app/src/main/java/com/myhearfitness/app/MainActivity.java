@@ -76,20 +76,21 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
     }
 
-    public void setUserPicture(Uri uri) {
+    public boolean setUserPicture(Uri uri) {
         try {
             InputStream input = getContentResolver().openInputStream(uri);
             if (input == null) {
-                return;
+                return false;
             }
             Bitmap bmp = BitmapFactory.decodeStream(input);
             storeBitmap(bmp);
+            return true;
         }
         catch (FileNotFoundException e)
         {
             System.out.println(e);
         }
-        return;
+        return false;
     }
 
     private void storeBitmap(Bitmap bmp){
