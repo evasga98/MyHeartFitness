@@ -1,5 +1,6 @@
 package com.myhearfitness.app.ui.profile;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,9 +52,8 @@ public class ProfileFragment extends Fragment {
 //        });
 
         ImageView imageView = root.findViewById(R.id.image_profile);
-        String path = ((MainActivity)getActivity()).getUserData("picture");
-        Uri uri = Uri.parse(path);
-        imageView.setImageURI(uri);
+        Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
+        imageView.setImageBitmap(bmp);
 
         Button button =  root.findViewById(R.id.edit_button);
         button.setOnClickListener(new View.OnClickListener() {

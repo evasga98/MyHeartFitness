@@ -1,13 +1,8 @@
 package com.myhearfitness.app.ui.settings;
 
 import android.content.Intent;
-import android.database.AbstractCursor;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +17,6 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
-
-import java.io.File;
 
 public class SettingsFragment extends Fragment {
 
@@ -81,7 +74,7 @@ public class SettingsFragment extends Fragment {
         super.onActivityResult(reqCode, resCode, data);
         if (reqCode == 1 && data != null) {
             Uri selectedFile = data.getData();
-            ((MainActivity)getActivity()).setUserData("picture", selectedFile.toString());
+            ((MainActivity)getActivity()).setUserPicture(selectedFile);
         }
     }
 

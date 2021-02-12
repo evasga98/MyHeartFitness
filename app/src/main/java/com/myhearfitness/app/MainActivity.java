@@ -3,10 +3,16 @@ package com.myhearfitness.app;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -19,11 +25,28 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
+    SQLiteDatabase db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        db = this.openOrCreateDatabase("myheartfitness.db", Context.MODE_PRIVATE,null);
+        db.execSQL("CREATE TABLE IF NOT EXISTS UserData(username VARCHAR,password VARCHAR);");
+        // db.execSQL("DROP TABLE ProfilePic;");
+        db.execSQL("CREATE TABLE IF NOT EXISTS ProfilePic(id INTEGER PRIMARY KEY, data BLOB);");
+        db.execSQL("INSERT INTO UserData VALUES('admin','admin');");
+
+        Cursor resultSet = db.rawQuery("Select * from UserData",null);
+        resultSet.moveToFirst();
+        String username = resultSet.getString(0);
+        String password = resultSet.getString(1);
+
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
@@ -55,6 +78,39 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(mChannel);
         }
         notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
+    }
+
+    public void setUserPicture(Uri uri) {
+        try {
+            InputStream input = getContentResolver().openInputStream(uri);
+            if (input == null) {
+                return;
+            }
+            Bitmap bmp = BitmapFactory.decodeStream(input);
+            storeBitmap(bmp);
+        }
+        catch (FileNotFoundException e)
+        {
+            System.out.println(e);
+        }
+        return;
+    }
+
+    private void storeBitmap(Bitmap bmp){
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        byte[] img = bos.toByteArray();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("data", img);
+        db.replace("ProfilePic", null, contentValues);
+    }
+
+    public Bitmap getBitmap(){
+        Cursor resultSet = db.rawQuery("SELECT * FROM ProfilePic WHERE   ID = (SELECT MAX(ID)  FROM ProfilePic)", null);
+        resultSet.moveToFirst();
+        byte[] blob = resultSet.getBlob(1);
+        Bitmap bitmap = BitmapFactory.decodeByteArray(blob , 0, blob.length);
+        return bitmap;
     }
 
     public void selectItem(int id){
