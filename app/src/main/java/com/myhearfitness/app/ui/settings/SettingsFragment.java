@@ -1,5 +1,6 @@
 package com.myhearfitness.app.ui.settings;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -82,15 +83,19 @@ public class SettingsFragment extends Fragment {
     }
 
     public boolean checkData(){
-//        if (isEmpty(firstName)) {
-//            firstName.setError("First name is required!");
-//            if (isEmpty(lastName)) {
-//                lastName.setError("Last name is required!");
-//            }
-//            return false;
-//        }
-        ((MainActivity)getActivity()).setUserData("name", firstName.getText().toString());
-        ((MainActivity)getActivity()).setUserData("lastname", lastName.getText().toString());
+        if (isEmpty(firstName)) {
+            firstName.setError("First name is required!");
+            if (isEmpty(lastName)) {
+                lastName.setError("Last name is required!");
+            }
+            return false;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("name", String.valueOf(firstName.getText()));
+        contentValues.put("lastname", String.valueOf(lastName.getText()));
+
+        ((MainActivity)getActivity()).setUserData(contentValues);
+
         return true;
     }
 

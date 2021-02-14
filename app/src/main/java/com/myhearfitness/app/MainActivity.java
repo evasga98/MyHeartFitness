@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -24,6 +23,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.myhearfitness.app.db.DBHelper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -32,16 +32,28 @@ import java.io.InputStream;
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
     SQLiteDatabase db;
+
+    private DBHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.deleteDatabase("myheartfitness.db");
+        dbHelper = new DBHelper(this);
+        db = dbHelper.open();
 
-        db = this.openOrCreateDatabase("myheartfitness.db", Context.MODE_PRIVATE,null);
-        db.execSQL("CREATE TABLE IF NOT EXISTS UserData(username VARCHAR,password VARCHAR);");
-        db.execSQL("CREATE TABLE IF NOT EXISTS ProfilePic(id INTEGER PRIMARY KEY, data BLOB);");
+        //dbManager.insert("Eva", "Sanchez");
 
-        Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
-        setUserPicture(imageUri);
+       Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
+       setUserPicture(imageUri);
+
+        //setUserData("eva", "eva");
+
+//        Cursor cursor = dbManager.fetch();
+//        cursor.moveToFirst();
+//        int index = cursor.getInt(0);
+//        String name = cursor.getString(1);
+//        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" + name);
 
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
@@ -83,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
             Bitmap bmp = BitmapFactory.decodeStream(input);
-            storeBitmap(bmp);
+            setBitmap(bmp);
             return true;
         }
         catch (FileNotFoundException e)
@@ -93,36 +105,22 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void storeBitmap(Bitmap bmp){
-        int index;
-        Cursor resultSet = db.rawQuery("SELECT * FROM ProfilePic WHERE   ID = (SELECT MAX(ID)  FROM ProfilePic)", null);
-        resultSet.moveToFirst();
+    private void setBitmap(Bitmap bmp){
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
         byte[] img = bos.toByteArray();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("data", img);
-        //Check length of table
-        try {
-            index = resultSet.getInt(0);
-        }
-        catch (Exception e){System.out.println("New value");
-            index = 0;
-        }
 
         //Delete previous profile pic
-        if (index >= 1) {
-            db.update("ProfilePic", contentValues, "id = 1", null);
-        }
-        else{
-            db.replace("ProfilePic", null, contentValues);
-        }
+
+        db.insert("ProfilePic", null, contentValues);
 
     }
 
     public Bitmap getBitmap(){
-        Cursor resultSet = db.rawQuery("SELECT * FROM ProfilePic WHERE   ID = (SELECT MAX(ID)  FROM ProfilePic)", null);
+        Cursor resultSet = db.rawQuery("SELECT * FROM ProfilePic WHERE   _ID = (SELECT MAX(_ID)  FROM ProfilePic)", null);
         resultSet.moveToFirst();
         byte[] blob = resultSet.getBlob(1);
         Bitmap bitmap = BitmapFactory.decodeByteArray(blob , 0, blob.length);
@@ -132,20 +130,16 @@ public class MainActivity extends AppCompatActivity {
     public void selectItem(int id){
         System.out.println("Selected");
         navView.getMenu().performIdentifierAction(id, 0);
-
     }
 
-    public void setUserData(String key, String value){
-        SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.commit();
+    public void setUserData(ContentValues cv){
+        db.insert("UserData", null, cv);
     }
 
-    public String getUserData(String key){
-        SharedPreferences sharedPreferences = getSharedPreferences("userData", MODE_PRIVATE);
-        String value = sharedPreferences.getString(key, " ");
-        return value;
-}
+    public Cursor  getUserData(){
+        Cursor resultSet = db.rawQuery("SELECT * FROM UserData WHERE   _ID = (SELECT MAX(_ID)  FROM UserData)", null);
+        return resultSet;
+    }
+
 
 }

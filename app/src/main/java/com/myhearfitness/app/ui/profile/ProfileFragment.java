@@ -1,5 +1,7 @@
 package com.myhearfitness.app.ui.profile;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -30,24 +32,27 @@ public class ProfileFragment extends Fragment {
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        String name = ((MainActivity)getActivity()).getUserData("name");
         final TextView text_name = root.findViewById(R.id.text_name);
-        text_name.setText(name);
-//        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//                String name = ((MainActivity)getActivity()).getUserData();
-//                textView.append(name);
-//            }
-//        });
-        String lastname = ((MainActivity)getActivity()).getUserData("lastname");
         final TextView text_lastname = root.findViewById(R.id.text_lastname);
-        text_lastname.setText(lastname);
 
-        ImageView imageView = root.findViewById(R.id.image_profile);
-        Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
-        imageView.setImageBitmap(bmp);
+        // show user data
+        try {
+            Cursor data = ((MainActivity)getActivity()).getUserData();
+            data.moveToFirst();
+            text_name.setText(data.getString(1));
+            text_lastname.setText(data.getString(2));
+        } catch (Exception e){
+            System.out.println(e);
+        }
+
+        // show user profile picture
+        try{
+            ImageView imageView = root.findViewById(R.id.image_profile);
+            Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
+            imageView.setImageBitmap(bmp);
+        }catch (Exception e){
+            System.out.println(e);
+        }
 
         Button button =  root.findViewById(R.id.edit_button);
         button.setOnClickListener(new View.OnClickListener() {

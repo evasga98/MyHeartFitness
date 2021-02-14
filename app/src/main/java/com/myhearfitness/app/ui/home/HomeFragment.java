@@ -1,6 +1,8 @@
 package com.myhearfitness.app.ui.home;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
+import com.myhearfitness.app.ui.profile.ProfileFragment;
 import com.myhearfitness.app.ui.settings.SettingsFragment;
 
 public class HomeFragment extends Fragment {
@@ -44,6 +47,26 @@ public class HomeFragment extends Fragment {
         //Show username
         //textView.append(((MainActivity)getActivity()).getUserData()); //poor and weak
 
+        // show user profile picture
+        ImageView imageView = root.findViewById(R.id.imageView);
+        Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
+        imageView.setImageBitmap(bmp);
+
+
+        ImageButton button =  root.findViewById(R.id.button_profile);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ((MainActivity)getActivity()).selectItem(R.id.navigation_profile);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.nav_host_fragment, new ProfileFragment());
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+
         final FloatingActionButton fab = root.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,38 +81,22 @@ public class HomeFragment extends Fragment {
 //                        .setAction("Action", null).show();
             }
         });
+//
 
-        ImageView imageView = root.findViewById(R.id.imageView);
-        Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
-        imageView.setImageBitmap(bmp);
-
-        ImageButton button =  root.findViewById(R.id.button_profile);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                ((MainActivity)getActivity()).selectItem(R.id.navigation_profile);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.nav_host_fragment, new SettingsFragment());
-                transaction.addToBackStack(null);
-                transaction.commit();
-            }
-        });
-
-        Button button_notify =  root.findViewById(R.id.button_notify);
-        button_notify.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+//        Button button_notify =  root.findViewById(R.id.button_notify);
+//        button_notify.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
 //                try {
 //                    TimeUnit.SECONDS.sleep(10);
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-                int reqCode = 1;
-                Intent intent = new Intent( getActivity().getApplicationContext(), MainActivity.class);
-                ((MainActivity)getActivity()).showNotification("Title", "This is the message to display", intent, reqCode);
-            }
-        });
+//                int reqCode = 1;
+//                Intent intent = new Intent( getActivity().getApplicationContext(), MainActivity.class);
+//                ((MainActivity)getActivity()).showNotification("Title", "This is the message to display", intent, reqCode);
+//            }
+//        });
         return root;
     }
 
