@@ -76,7 +76,7 @@ public class SettingsFragment extends Fragment {
         super.onActivityResult(reqCode, resCode, data);
         if (reqCode == 1 && data != null) {
             Uri selectedFile = data.getData();
-            boolean success = ((MainActivity)getActivity()).setUserPicture(selectedFile);
+            boolean success = ((MainActivity)getActivity()).newUserPic(selectedFile);
 
             if (success) profilepic.append(" "+ "\u2714");
         }

@@ -38,22 +38,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.deleteDatabase("myheartfitness.db");
+        //this.deleteDatabase("myheartfitness.db");
+
+        // create database and tables
         dbHelper = new DBHelper(this);
         db = dbHelper.open();
 
-        //dbManager.insert("Eva", "Sanchez");
-
-       Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
-       setUserPicture(imageUri);
-
-        //setUserData("eva", "eva");
-
-//        Cursor cursor = dbManager.fetch();
-//        cursor.moveToFirst();
-//        int index = cursor.getInt(0);
-//        String name = cursor.getString(1);
-//        System.out.println("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE" + name);
+        // set default user pic
+        Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
+        newUserPic(imageUri);
 
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
@@ -68,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
     }
 
+    // method to send a notification to the user
     public void showNotification(String title, String message, Intent intent, int reqCode) {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
         String CHANNEL_ID = "channel_name";// The id of the channel.
@@ -88,7 +82,15 @@ public class MainActivity extends AppCompatActivity {
         notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
     }
 
-    public boolean setUserPicture(Uri uri) {
+    // select fragment in code
+    public void selectItem(int id){
+        System.out.println("Selected");
+        navView.getMenu().performIdentifierAction(id, 0);
+    }
+
+/**************************** DATABASE FUNCTIONS***********************************/
+
+    public boolean newUserPic(Uri uri) {
         try {
             InputStream input = getContentResolver().openInputStream(uri);
             if (input == null) {
@@ -112,11 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
         ContentValues contentValues = new ContentValues();
         contentValues.put("data", img);
-
-        //Delete previous profile pic
-
         db.insert("ProfilePic", null, contentValues);
-
     }
 
     public Bitmap getBitmap(){
@@ -125,11 +123,6 @@ public class MainActivity extends AppCompatActivity {
         byte[] blob = resultSet.getBlob(1);
         Bitmap bitmap = BitmapFactory.decodeByteArray(blob , 0, blob.length);
         return bitmap;
-    }
-
-    public void selectItem(int id){
-        System.out.println("Selected");
-        navView.getMenu().performIdentifierAction(id, 0);
     }
 
     public void setUserData(ContentValues cv){

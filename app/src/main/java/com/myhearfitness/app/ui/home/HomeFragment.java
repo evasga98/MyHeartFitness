@@ -44,15 +44,12 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        //Show username
-        //textView.append(((MainActivity)getActivity()).getUserData()); //poor and weak
-
         // show user profile picture
         ImageView imageView = root.findViewById(R.id.imageView);
         Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
         imageView.setImageBitmap(bmp);
 
-
+        // button to open profile fragment
         ImageButton button =  root.findViewById(R.id.button_profile);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +63,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
+        // button to upload pdf file
         final FloatingActionButton fab = root.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +78,6 @@ public class HomeFragment extends Fragment {
 //                        .setAction("Action", null).show();
             }
         });
-//
 
 //        Button button_notify =  root.findViewById(R.id.button_notify);
 //        button_notify.setOnClickListener(new View.OnClickListener() {
