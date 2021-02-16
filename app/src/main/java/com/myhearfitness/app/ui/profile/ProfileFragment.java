@@ -3,6 +3,8 @@ package com.myhearfitness.app.ui.profile;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 
+import android.icu.util.Calendar;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
@@ -19,6 +22,20 @@ import androidx.lifecycle.ViewModelProviders;
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 import com.myhearfitness.app.ui.settings.SettingsFragment;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.Period;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
+import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
 
@@ -32,6 +49,7 @@ public class ProfileFragment extends Fragment {
 
         final TextView text_name = root.findViewById(R.id.text_name);
         final TextView text_lastname = root.findViewById(R.id.text_lastname);
+        final TextView text_age = root.findViewById(R.id.text_age);
 
         // show user data
         try {
@@ -39,6 +57,10 @@ public class ProfileFragment extends Fragment {
             data.moveToFirst();
             text_name.setText(data.getString(1));
             text_lastname.setText(data.getString(2));
+
+
+            text_age.setText(getDate(data.getString(3)));
+
         } catch (Exception e){
             System.out.println(e);
         }
@@ -67,5 +89,15 @@ public class ProfileFragment extends Fragment {
 
         return root;
     }
+
+    private String getDate(String date) throws ParseException {
+        SimpleDateFormat dob = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault());
+        Date dt = dob.parse(date);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+        return formatter.format(dt);
+    }
+
+
 
 }

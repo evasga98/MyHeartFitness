@@ -13,13 +13,15 @@ final class Contract {
         public static final String TABLE_NAME = "UserData";
         public static final String COLUMN_NAME= "name";
         public static final String COLUMN_LASTNAME = "lastname";
+        public static final String COLUMN_BIRTH = "birthday";
 
 
         public static final String CREATE_TABLE =
                 "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
                         " (" + _ID  + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                         + COLUMN_NAME + " TEXT NOT NULL, "
-                        + COLUMN_LASTNAME + " TEXT);";
+                        + COLUMN_LASTNAME + " TEXT, "
+                        + COLUMN_BIRTH + " DATE);";
     }
 
     public static class ProfilePicEntry implements BaseColumns {

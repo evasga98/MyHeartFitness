@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,15 @@ import androidx.lifecycle.ViewModelProviders;
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SettingsFragment extends Fragment {
 
     EditText firstName;
     EditText lastName;
+    EditText birthday;
     Button register;
     Button upload;
     EditText profilepic;
@@ -45,6 +51,7 @@ public class SettingsFragment extends Fragment {
 
         firstName = root.findViewById(R.id.firstName);
         lastName = root.findViewById(R.id.lastName);
+        birthday = root.findViewById(R.id.date);
         register = root.findViewById(R.id.button_save);
         upload = root.findViewById(R.id.button_upload);
         profilepic = root.findViewById(R.id.picture);
@@ -68,6 +75,8 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+
+
         return root;
     }
 
@@ -83,14 +92,33 @@ public class SettingsFragment extends Fragment {
     }
 
     public boolean checkData(){
+        ContentValues contentValues = new ContentValues();
+
+        //check name is not empty
         if (isEmpty(firstName)) {
             firstName.setError("First name is required!");
-            if (isEmpty(lastName)) {
-                lastName.setError("Last name is required!");
-            }
             return false;
         }
-        ContentValues contentValues = new ContentValues();
+
+        //check last name is not empty
+        if (isEmpty(lastName)) {
+            lastName.setError("Last name is required!");
+            return false;
+        }
+
+        //check date format is valid
+        if (!isEmpty(birthday)) {
+            SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date myDate;
+            try {
+                myDate = df.parse(String.valueOf(birthday.getText()));
+                contentValues.put("birthday", String.valueOf(myDate));
+            } catch (ParseException e) {
+                birthday.setError("Date format should be dd/MM/yyyy");
+                return false;
+            }
+        }
+
         contentValues.put("name", String.valueOf(firstName.getText()));
         contentValues.put("lastname", String.valueOf(lastName.getText()));
 

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.deleteDatabase("myheartfitness.db");
+        this.deleteDatabase("myheartfitness.db");
 
         // create database and tables
         dbHelper = new DBHelper(this);
