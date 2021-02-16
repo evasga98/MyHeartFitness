@@ -37,7 +37,7 @@
         android:layout_marginTop="28dp"
         android:clickable="true"
         android:ems="15"
-        android:focusable="false"
+
         android:hint="Birthday"
         android:inputType="date"
         app:layout_constraintEnd_toEndOf="parent"

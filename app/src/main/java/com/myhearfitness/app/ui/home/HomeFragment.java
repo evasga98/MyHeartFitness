@@ -79,20 +79,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
-//        Button button_notify =  root.findViewById(R.id.button_notify);
-//        button_notify.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
+        Button button_notify =  root.findViewById(R.id.button_notify);
+        button_notify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                try {
 //                    TimeUnit.SECONDS.sleep(10);
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                }
-//                int reqCode = 1;
-//                Intent intent = new Intent( getActivity().getApplicationContext(), MainActivity.class);
-//                ((MainActivity)getActivity()).showNotification("Title", "This is the message to display", intent, reqCode);
-//            }
-//        });
+                int reqCode = 1;
+                Intent intent = new Intent( getActivity().getApplicationContext(), MainActivity.class);
+                ((MainActivity)getActivity()).showNotification("MyHeartFitness", "Your results are ready", intent, reqCode);
+            }
+        });
         return root;
     }
 
