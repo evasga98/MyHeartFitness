@@ -24,10 +24,20 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.myhearfitness.app.db.DBHelper;
+import com.myhearfitness.app.srqa.Main;
+import com.opencsv.CSVReader;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
@@ -38,7 +48,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.deleteDatabase("myheartfitness.db");
+        //this.deleteDatabase("myheartfitness.db");
+
+
+        List<List<String>> records = Main.readCSV(this);
+        System.out.println(records.toString());
+
 
         // create database and tables
         dbHelper = new DBHelper(this);
