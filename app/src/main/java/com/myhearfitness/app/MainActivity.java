@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity {
         //this.deleteDatabase("myheartfitness.db");
 
 
-        List<List<String>> records = Main.readCSV(this);
-        System.out.println(records.toString());
+        Main.readCSV(this);
+
 
 
         // create database and tables
