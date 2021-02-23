@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.DoubleStream;
 
 public class Main {
 
@@ -47,7 +48,7 @@ public class Main {
 
     private static void loadTimeSeries(List<List<String>> data){
         // load time series RR intervals
-        List<Float> RR = new ArrayList<>();
+        List<Double> RR = new ArrayList<>();
 
         // load the Boolean time series of AF detections for RR
         List<Boolean> D = new ArrayList<>();
@@ -55,24 +56,24 @@ public class Main {
         // define window size
         int w = 30;
 
-        for(int i=1; i < data.size();  i++ ) {
-            RR.add(Float.parseFloat(data.get(i).get(1)));
+        for(int i=0; i < data.size();  i++ ) {
+            RR.add(Double.parseDouble(data.get(i).get(1)));
             D.add(Boolean.parseBoolean(data.get(i).get(2)));
-
         }
+
+        //System.out.println("Sublist: " + RR.toString());
 
         int lw = Math.round((data.size()/w));
         List<Integer> pos_af = new ArrayList<Integer>(Collections.nCopies(lw, 0));
         //System.out.println(pos_af.size());
         //System.out.println(lw);
 
-        List<Float> dataRR;
+        List<Double> dataRR;
         List<Boolean> dataD;
         for(int k=1; k < lw;  k++ ) {
             // take a time series of RR interval of length w
             dataRR = RR.subList(( w*(k-1)),k*w);
-            System.out.println("Sublist: " + dataRR.toString());
-
+            //System.out.println("Sublist: " + dataRR.toString());
 
             /* a window is defined to be in AF iif number of AF (Atrial Fibrilation) detections in data is >=w/2
             define pos_af as the boolean vector identifying the AF windows*/
@@ -88,18 +89,19 @@ public class Main {
             // mean
             double mean = getMean(dataRR);
 
-            //double lower = dataRR.get(dataRR.size() / 2 - 1);
-            //double upper = dataRR.get(dataRR.size() / 2);
-
             //median
             double median = getMedian(dataRR);
 
             // person coefficient of variation
             double VRR = getSTD(dataRR)/getMean(dataRR);
 
+            //mean absolute dispersion with respect to the median
+            double VmeRR = getMeanAbsDispersion(dataRR, median);
+
             //System.out.println("Mean: " + mean);
             //System.out.println("Median: " + median);
-            System.out.println("VRR: " + VRR);
+            //System.out.println("VRR: " + VRR);
+            System.out.println("VmeRR: " + VmeRR);
             //TimeUnit.SECONDS.sleep(10);
 
 
@@ -110,10 +112,10 @@ public class Main {
 
     /* Descriptive mesures*/
 
-    private static float getMean(List<Float> list) {
-        float sum = 0;
+    private static double getMean(List<Double> list) {
+        double sum = 0;
         if(!list.isEmpty()) {
-            for (Float element : list) {
+            for (Double element : list) {
                 sum += element;
             }
             return sum / list.size();
@@ -121,22 +123,34 @@ public class Main {
         return sum;
     }
 
-    private static float getMedian(List<Float> list){
+    private static double getMedian(List<Double> list){
         Collections.sort(list);
         int middle = list.size() / 2;
         middle = middle > 0 && middle % 2 == 0 ? middle - 1 : middle;
         return list.get(middle);
     }
 
-    private static double getSTD(List<Float> list)
+    private static double getSTD(List<Double> list)
     {
-        float variance = 0;
-        float mean = getMean(list);
-
-        for (Float element : list) {
-            variance += Math.pow(element - mean, 2);
+        double variance = 0;
+        double mean = getMean(list);
+            if(!list.isEmpty()) {
+                for (Double element : list) {
+                    variance += Math.pow(element - mean, 2);
+                }
         }
         return Math.sqrt(variance/list.size());
+    }
+
+    private static double getMeanAbsDispersion(List<Double> list, double median) {
+        double sum = 0;
+        if(!list.isEmpty()) {
+            for (Double element : list) {
+                sum += Math.abs(element-median);
+            }
+            return sum / median;
+        }
+        return sum;
     }
 
 }
