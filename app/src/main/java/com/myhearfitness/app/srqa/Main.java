@@ -3,6 +3,7 @@ package com.myhearfitness.app.srqa;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -46,7 +47,7 @@ public class Main {
 
     private static void loadTimeSeries(List<List<String>> data){
         // load time series RR intervals
-        List<Double> RR = new ArrayList<>();
+        List<Float> RR = new ArrayList<>();
 
         // load the Boolean time series of AF detections for RR
         List<Boolean> D = new ArrayList<>();
@@ -55,7 +56,7 @@ public class Main {
         int w = 30;
 
         for(int i=1; i < data.size();  i++ ) {
-            RR.add(Double.parseDouble(data.get(i).get(1)));
+            RR.add(Float.parseFloat(data.get(i).get(1)));
             D.add(Boolean.parseBoolean(data.get(i).get(2)));
 
         }
@@ -65,37 +66,40 @@ public class Main {
         //System.out.println(pos_af.size());
         //System.out.println(lw);
 
-        List<Double> dataRR = new ArrayList<>();
-        List<Boolean> dataD = new ArrayList<>();
-
+        List<Float> dataRR;
+        List<Boolean> dataD;
         for(int k=1; k < lw;  k++ ) {
             // take a time series of RR interval of length w
             dataRR = RR.subList(( w*(k-1)),k*w);
+            System.out.println("Sublist: " + dataRR.toString());
 
-            // a window is defined to be in AF iif number of AF (Atrial Fibrilation) detections in data is >=w/2
-            // define pos_af as the boolean vector identifying the AF windows
+
+            /* a window is defined to be in AF iif number of AF (Atrial Fibrilation) detections in data is >=w/2
+            define pos_af as the boolean vector identifying the AF windows*/
             dataD = D.subList(( w*(k-1)),k*w);
 
             if (Collections.frequency(dataD, 1) > w/2) {
                 pos_af.add(k,1);
             }
 
-            // Computation of covariates
+            /*Computation of covariates*/
             // Descriptive mesures
 
             // mean
             double mean = getMean(dataRR);
 
-            double lower = dataRR.get(dataRR.size() / 2 - 1);
-            double upper = dataRR.get(dataRR.size() / 2);
+            //double lower = dataRR.get(dataRR.size() / 2 - 1);
+            //double upper = dataRR.get(dataRR.size() / 2);
 
-
-            //double median  = (dataRR.get(dataRR.size()/2) + dataRR.get(dataRR.size()/2 - 1))/2;
+            //median
             double median = getMedian(dataRR);
 
-            //System.out.println((lower + upper) / 2.0);
-            System.out.println(mean);
-            System.out.println(median);
+            // person coefficient of variation
+            double VRR = getSTD(dataRR)/getMean(dataRR);
+
+            //System.out.println("Mean: " + mean);
+            //System.out.println("Median: " + median);
+            System.out.println("VRR: " + VRR);
             //TimeUnit.SECONDS.sleep(10);
 
 
@@ -103,24 +107,36 @@ public class Main {
 
     }
 
-    private static double getMean(List<Double> list) {
-        Double sum = 0.0;
+
+    /* Descriptive mesures*/
+
+    private static float getMean(List<Float> list) {
+        float sum = 0;
         if(!list.isEmpty()) {
-            for (Double element : list) {
+            for (Float element : list) {
                 sum += element;
             }
-            return sum.doubleValue() / list.size();
+            return sum / list.size();
         }
         return sum;
     }
 
-    private static double getMedian(List<Double> list){
+    private static float getMedian(List<Float> list){
         Collections.sort(list);
-        if(list.size()%2 != 0){
-            return list.get(list.size()/2);
-        }
-        return  ((list.get((list.size()-1)/2)- list.get(list.size()/2))/2.0);
+        int middle = list.size() / 2;
+        middle = middle > 0 && middle % 2 == 0 ? middle - 1 : middle;
+        return list.get(middle);
     }
 
+    private static double getSTD(List<Float> list)
+    {
+        float variance = 0;
+        float mean = getMean(list);
+
+        for (Float element : list) {
+            variance += Math.pow(element - mean, 2);
+        }
+        return Math.sqrt(variance/list.size());
+    }
 
 }
