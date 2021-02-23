@@ -64,7 +64,9 @@ public class SRP {
             loc = getMatches(mh, symbs.get(k));
             int[][] loc_arr = listToMatrix(loc);
             int[][] A = multiplyMatrix(loc_arr, transposeMatrix(loc_arr));
+            int[][] C = multiplyMatrix(loc_arr, transposeMatrix(loc_arr));
             System.out.println(Arrays.toString(sumRow(A)));
+            System.out.println(sumColumn(sumRow(A)));
             //System.out.println("loc: " + loc.toString());
 
 

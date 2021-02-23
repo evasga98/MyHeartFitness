@@ -73,19 +73,27 @@ public class functions {
 
     public static int[] sumRow(int[][] a){
         int [] sum = new int[a.length];
-        int r = a.length ;// row
-        int c = a[0].length; // col
 
         //Calculates sum of each row of given matrix
-        for(int i = 0; i < r; i++){
+        for(int i = 0; i < a.length; i++){
             int sumRow = 0;
-            for(int j = 0; j < c; j++){
+            for(int j = 0; j < a[0].length; j++){
                 sumRow = sumRow + a[i][j];
             }
             sum[i] = sumRow;
         }
         return  sum;
     }
+
+    public static int sumColumn(int[] a){
+        //Calculates sum of each column of given vector
+        int sum = 0;
+        for(int i = 0; i < a.length; i++){
+            sum += a[i];
+        }
+        return  sum;
+    }
+
 
     public static int[][] multiplyMatrix(int[][] a, int[][] b){
         int[][] product = new int[a.length][b[0].length];
