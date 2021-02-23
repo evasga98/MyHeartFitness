@@ -1,6 +1,7 @@
 package com.myhearfitness.app.srqa;
 
 
+
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
@@ -21,7 +22,11 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.DoubleStream;
 
-public class Main {
+import static com.myhearfitness.app.srqa.functions.*;
+
+public class Sensors {
+    List<Boolean> dataD;
+    List<Double> dataRR;
 
     private static final String COMMA_DELIMITER = ",";
 
@@ -61,19 +66,15 @@ public class Main {
             D.add(Boolean.parseBoolean(data.get(i).get(2)));
         }
 
-        //System.out.println("Sublist: " + RR.toString());
-
         int lw = Math.round((data.size()/w));
         List<Integer> pos_af = new ArrayList<Integer>(Collections.nCopies(lw, 0));
-        //System.out.println(pos_af.size());
-        //System.out.println(lw);
 
-        List<Double> dataRR;
         List<Boolean> dataD;
+        List<Double> dataRR;
         for(int k=1; k < lw;  k++ ) {
             // take a time series of RR interval of length w
-            dataRR = RR.subList(( w*(k-1)),k*w);
-            //System.out.println("Sublist: " + dataRR.toString());
+            dataRR =  RR.subList(( w*(k-1)),k*w);
+            //System.out.println("Inicio: " + dataRR.toString());
 
             /* a window is defined to be in AF iif number of AF (Atrial Fibrilation) detections in data is >=w/2
             define pos_af as the boolean vector identifying the AF windows*/
@@ -90,7 +91,8 @@ public class Main {
             double mean = getMean(dataRR);
 
             //median
-            double median = getMedian(dataRR);
+            List<Double> list = new ArrayList<>(dataRR);
+            double median = getMedian(list);
 
             // person coefficient of variation
             double VRR = getSTD(dataRR)/getMean(dataRR);
@@ -101,56 +103,12 @@ public class Main {
             //System.out.println("Mean: " + mean);
             //System.out.println("Median: " + median);
             //System.out.println("VRR: " + VRR);
-            System.out.println("VmeRR: " + VmeRR);
+            //System.out.println("VmeRR: " + VmeRR);
             //TimeUnit.SECONDS.sleep(10);
-
-
+            //System.out.println("Sublist: " + dataRR.toString());
+            //System.out.println("Sublist: " + dataRR.toString());
+            SRP.funcSRP(dataRR, 3, 1);
         }
-
-    }
-
-
-    /* Descriptive mesures*/
-
-    private static double getMean(List<Double> list) {
-        double sum = 0;
-        if(!list.isEmpty()) {
-            for (Double element : list) {
-                sum += element;
-            }
-            return sum / list.size();
-        }
-        return sum;
-    }
-
-    private static double getMedian(List<Double> list){
-        Collections.sort(list);
-        int middle = list.size() / 2;
-        middle = middle > 0 && middle % 2 == 0 ? middle - 1 : middle;
-        return list.get(middle);
-    }
-
-    private static double getSTD(List<Double> list)
-    {
-        double variance = 0;
-        double mean = getMean(list);
-            if(!list.isEmpty()) {
-                for (Double element : list) {
-                    variance += Math.pow(element - mean, 2);
-                }
-        }
-        return Math.sqrt(variance/list.size());
-    }
-
-    private static double getMeanAbsDispersion(List<Double> list, double median) {
-        double sum = 0;
-        if(!list.isEmpty()) {
-            for (Double element : list) {
-                sum += Math.abs(element-median);
-            }
-            return sum / median;
-        }
-        return sum;
     }
 
 }

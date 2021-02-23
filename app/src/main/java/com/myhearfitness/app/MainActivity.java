@@ -24,20 +24,11 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.myhearfitness.app.db.DBHelper;
-import com.myhearfitness.app.srqa.Main;
-import com.opencsv.CSVReader;
+import com.myhearfitness.app.srqa.Sensors;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
@@ -51,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         //this.deleteDatabase("myheartfitness.db");
 
 
-        Main.readCSV(this);
+        Sensors.readCSV(this);
 
 
 
