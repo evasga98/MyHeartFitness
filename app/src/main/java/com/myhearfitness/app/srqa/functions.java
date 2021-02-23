@@ -44,4 +44,59 @@ public class functions {
         }
         return sum;
     }
+
+    public static long getFactorial(int n) {
+        if (n <= 2) {
+            return n;
+        }
+        return n * getFactorial(n - 1);
+    }
+
+    public static int[][] listToMatrix(List<Integer> list){
+        int[][] matrix = new int[list.size()][1];
+        for (int i = 0 ; i < list.size(); i ++){
+            matrix[i][0] = list.get(i);
+        }
+        return  matrix;
+    }
+
+    public static int[][] transposeMatrix(int[][] a){
+        int[][] t = new int[a[0].length][a.length];
+        for(int i = 0; i < a.length; i++) {
+            for(int j = 0; j < a[0].length; j++) {
+                t[j][i] = a[i][j];
+            }
+
+        }
+        return t;
+    }
+
+    public static int[] sumRow(int[][] a){
+        int [] sum = new int[a.length];
+        int r = a.length ;// row
+        int c = a[0].length; // col
+
+        //Calculates sum of each row of given matrix
+        for(int i = 0; i < r; i++){
+            int sumRow = 0;
+            for(int j = 0; j < c; j++){
+                sumRow = sumRow + a[i][j];
+            }
+            sum[i] = sumRow;
+        }
+        return  sum;
+    }
+
+    public static int[][] multiplyMatrix(int[][] a, int[][] b){
+        int[][] product = new int[a.length][b[0].length];
+        for(int i = 0; i < a.length; i++) {
+            for (int j = 0; j < b[0].length; j++) {
+                for (int k = 0; k < a[0].length; k++) {
+                    product[i][j] += a[i][k] * b[k][j];
+                }
+            }
+        }
+        return product;
+    }
+
 }
