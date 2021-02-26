@@ -1,13 +1,8 @@
 package com.myhearfitness.app.srqa;
 
-import android.os.strictmode.ServiceConnectionLeakedViolation;
-
-import org.apache.commons.collections.list.AbstractLinkedList;
-
 import static com.myhearfitness.app.srqa.functions.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -27,6 +22,7 @@ public class SRP {
         List<List<Integer>> mh = new ArrayList<>();
         List<Double> B;
         List<Integer> mh_list;
+
 
         double mean;
         double std;
@@ -58,19 +54,27 @@ public class SRP {
         }
 
         List<List<Integer>> symbs = generatePerm(numbers);
+        ArrayList<int[][]>  A = new ArrayList<>();
+        ArrayList<Double>  SRR = new ArrayList<>();
 
         List<Integer> loc = new ArrayList<>();
-        for(int k = 0; k < getFactorial(m); k++){
+        for(int k = 0; k < factorial(m); k++){
             loc = getMatches(mh, symbs.get(k));
             int[][] loc_arr = listToMatrix(loc);
-            int[][] A = multiplyMatrix(loc_arr, transposeMatrix(loc_arr));
-            int[][] C = multiplyMatrix(loc_arr, transposeMatrix(loc_arr));
-            System.out.println(Arrays.toString(sumRow(A)));
-            System.out.println(sumColumn(sumRow(A)));
-            //System.out.println("loc: " + loc.toString());
 
+            A.add(multiplyMatrix(loc_arr, transposeMatrix(loc_arr)));
 
+            double srr_val = Math.pow(((double)sumColumn(sumRow(A.get(k)))) / (T-(d*(m-1))), 2);
+            SRR.add(srr_val);
         }
+
+        int n = T-(d*(m-1));
+        int[][] matriz = new int[n][n];
+
+        for(int l = 0; l< factorial(m); l++){
+            matriz = sumMatrix(matriz, A.get(l));
+        }
+        System.out.println(Arrays.deepToString(matriz));
 
     }
 

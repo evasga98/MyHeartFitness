@@ -45,11 +45,11 @@ public class functions {
         return sum;
     }
 
-    public static long getFactorial(int n) {
+    public static long factorial(int n) {
         if (n <= 2) {
             return n;
         }
-        return n * getFactorial(n - 1);
+        return n * factorial(n - 1);
     }
 
     public static int[][] listToMatrix(List<Integer> list){
@@ -69,6 +69,16 @@ public class functions {
 
         }
         return t;
+    }
+
+    public static int[][] sumMatrix(int[][] a, int[][] b){
+        int[][] c = new int[a.length][a[0].length];
+        for (int i=0; i<a.length; i++){
+            for (int j=0; j<a[0].length; j++){
+                c[i][j] = a[i][j] + b[i][j];
+            }
+        }
+        return c;
     }
 
     public static int[] sumRow(int[][] a){
