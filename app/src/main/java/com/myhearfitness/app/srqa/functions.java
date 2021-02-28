@@ -1,7 +1,9 @@
 package com.myhearfitness.app.srqa;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
 
 public class functions {
     public static double getMean(List<Double> list) {
@@ -50,6 +52,10 @@ public class functions {
             return n;
         }
         return n * factorial(n - 1);
+    }
+
+    public static int[] subArray(int[] array, int beg, int end) {
+        return Arrays.copyOfRange(array, beg, end + 1);
     }
 
     public static int[][] listToMatrix(List<Integer> list){

@@ -100,14 +100,13 @@ public class Sensors {
             //mean absolute dispersion with respect to the median
             double VmeRR = getMeanAbsDispersion(dataRR, median);
 
-            //System.out.println("Mean: " + mean);
-            //System.out.println("Median: " + median);
-            //System.out.println("VRR: " + VRR);
-            //System.out.println("VmeRR: " + VmeRR);
-            //TimeUnit.SECONDS.sleep(10);
-            //System.out.println("Sublist: " + dataRR.toString());
-            //System.out.println("Sublist: " + dataRR.toString());
-            SRP.funcSRP(dataRR, 3, 1);
+            int m = 3;
+            int d = 1;
+            SRP srp = SRP.funcSRP(dataRR, m, d);
+
+            int[][] Ai = srp.A.get((int) (factorial(m)-1));
+            SRQA.Recu_SQRA(Ai, 2, 0);
+
         }
     }
 

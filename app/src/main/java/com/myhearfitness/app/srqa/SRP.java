@@ -12,7 +12,25 @@ import java.util.List;
 import java.util.Map;
 
 public class SRP {
-    public static  void funcSRP(List<Double> x, int m,int d) {
+
+    public ArrayList<int[][]>  A;
+    public int[][] matriz;
+    public ArrayList<Double>  SRR;
+    public List<Double> cv;
+
+    public SRP() {
+
+    }
+
+    public SRP( ArrayList<int[][]>  A, int[][] matriz, ArrayList<Double>  SRR, List<Double> cv ) {
+        this.A = A;
+        this.matriz = matriz;
+        this.SRR = SRR;
+        this.cv = cv;
+    }
+
+
+    public static SRP funcSRP(List<Double> x, int m,int d) {
         int T = x.size();
 
         List<Double> sub_list;
@@ -74,7 +92,10 @@ public class SRP {
         for(int l = 0; l< factorial(m); l++){
             matriz = sumMatrix(matriz, A.get(l));
         }
-        System.out.println(Arrays.deepToString(matriz));
+        //System.out.println(Arrays.deepToString(matriz));
+        //System.out.println(Arrays.deepToString(matriz));
+
+        return new SRP(A, matriz, SRR, cv);
 
     }
 
