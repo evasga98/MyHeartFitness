@@ -6,6 +6,18 @@ import java.util.List;
 
 
 public class functions {
+
+    public static int sumList(List<Integer> list) {
+        int sum = 0;
+        if(!list.isEmpty()) {
+            for (Integer element : list) {
+                sum += element;
+            }
+            return sum;
+        }
+        return sum;
+    }
+
     public static double getMean(List<Double> list) {
         double sum = 0;
         if(!list.isEmpty()) {
@@ -73,6 +85,14 @@ public class functions {
                 t[j][i] = a[i][j];
             }
 
+        }
+        return t;
+    }
+
+    public static int[] getIncrementingArray(int start, int end){
+        int[] t = new int[end - start + 1];
+        for(int i = 0; i < t.length; i++) {
+            t[i] = start + i;
         }
         return t;
     }
