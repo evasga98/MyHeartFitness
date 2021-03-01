@@ -106,16 +106,41 @@ public class Sensors {
 
             int[][] Ai = srp.A.get((int) (factorial(m)-1));
 
-            SRQA srqa = SRQA.Recu_SRQA(Ai, 2, 0);
-            System.out.println("RR " + srqa.RR);
-            System.out.println("DET " +srqa.DET);
-            System.out.println("DEThat " + srqa.DEThat);
-            System.out.println("ENTR " + srqa.ENTR);
-            System.out.println("L " +srqa.L);
-            System.out.println("Lhat " +srqa.Lhat);
-            System.out.println("V " +srqa.V.toString());
-            System.out.println("dd " +Arrays.toString(srqa.dd));
-            System.out.println("nd " +Arrays.toString(srqa.nd));
+            SRQA srqa_inc = SRQA.Recu_SRQA(Ai, 2, 0);
+//            System.out.print("RR " + srqa_inc.RR);
+//            System.out.print(" DET " +srqa_inc.DET);
+//            System.out.print(" DEThat " + srqa_inc.DEThat);
+//            System.out.print(" ENTR " + srqa_inc.ENTR);
+//            System.out.print(" L " +srqa_inc.L);
+//            System.out.print(" Lhat " +srqa_inc.Lhat);
+//            System.out.print(" V " +srqa_inc.V.toString());
+//            System.out.print(" dd " +Arrays.toString(srqa_inc.dd));
+//            System.out.println(" nd " +Arrays.toString(srqa_inc.nd));
+//            System.out.println("                 ");
+
+            SRQA srqa_dec = SRQA.Recu_SRQA(srp.A.get(0), 2, 0);
+//            System.out.print("RR " + srqa_dec.RR);
+//            System.out.print(" DET " +srqa_dec.DET);
+//            System.out.print(" DEThat " + srqa_dec.DEThat);
+//            System.out.print(" ENTR " + srqa_dec.ENTR);
+//            System.out.print(" L " +srqa_dec.L);
+//            System.out.print(" Lhat " +srqa_dec.Lhat);
+//            System.out.print(" V " +srqa_dec.V.toString());
+//            System.out.print(" dd " +Arrays.toString(srqa_dec.dd));
+//            System.out.println(" nd " +Arrays.toString(srqa_dec.nd));
+//            System.out.println("                  ");
+
+            SRQA srqa_all = SRQA.Recu_SRQA(srp.matriz, 2, 0);
+//            System.out.print("RR " + srqa_all.RR);
+//            System.out.print(" DET " +srqa_all.DET);
+//            System.out.print(" DEThat " + srqa_all.DEThat);
+//            System.out.print(" ENTR " + srqa_all.ENTR);
+//            System.out.print(" L " +srqa_all.L);
+//            System.out.print(" Lhat " +srqa_all.Lhat);
+//            System.out.print(" V " +srqa_all.V.toString());
+//            System.out.print(" dd " +Arrays.toString(srqa_all.dd));
+//            System.out.println(" nd " +Arrays.toString(srqa_all.nd));
+//            System.out.println("                  ");
 
         }
     }

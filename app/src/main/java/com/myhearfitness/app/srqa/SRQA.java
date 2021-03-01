@@ -146,7 +146,7 @@ public class SRQA {
 
         /*calculate vertical line length distributions (V)*/
         int [] RPvi = new int[RP.length];
-        List<List<Integer>> cv;
+        List<List<Integer>> cv = new ArrayList<>();
         List<Integer> VV = new ArrayList<>();
 
         for (int i = 0; i < N1; i++)
@@ -157,8 +157,6 @@ public class SRQA {
             }
 
             cv = cellfun(RPvi);
-            //System.out.println(Arrays.toString(RPvi));
-            //System.out.println(cv.toString());
 
             int[] v = new int[cv.size()];
 
@@ -175,6 +173,7 @@ public class SRQA {
             }
 
         }
+
         List<Integer> av_list = new ArrayList<>(new HashSet<>(VV));
         Integer[] av = new Integer[av_list.size()];
         av_list.toArray(av);
@@ -189,6 +188,7 @@ public class SRQA {
             }
         }
         int[] distV = hist(sv, av.length);
+
 
         double[] pV = new double[distV.length];
         for (int i = 0; i < pV.length; i++)
@@ -228,6 +228,7 @@ public class SRQA {
         }
 
 
+
         return new SRQA(RR, DET, DEThat, ENTR, L, Lhat, V, dd, nd);
 
 
@@ -260,8 +261,9 @@ public class SRQA {
             pevious = RPvi[i];
 
         }
-        b = new ArrayList<>();
         a.add(b);
+        //b = new ArrayList<>();
+        //a.add(b);
         return a;
     }
 
