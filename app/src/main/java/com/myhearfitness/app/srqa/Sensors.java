@@ -105,7 +105,17 @@ public class Sensors {
             SRP srp = SRP.funcSRP(dataRR, m, d);
 
             int[][] Ai = srp.A.get((int) (factorial(m)-1));
-            SRQA.Recu_SQRA(Ai, 2, 0);
+
+            SRQA srqa = SRQA.Recu_SRQA(Ai, 2, 0);
+            System.out.println("RR " + srqa.RR);
+            System.out.println("DET " +srqa.DET);
+            System.out.println("DEThat " + srqa.DEThat);
+            System.out.println("ENTR " + srqa.ENTR);
+            System.out.println("L " +srqa.L);
+            System.out.println("Lhat " +srqa.Lhat);
+            System.out.println("V " +srqa.V.toString());
+            System.out.println("dd " +Arrays.toString(srqa.dd));
+            System.out.println("nd " +Arrays.toString(srqa.nd));
 
         }
     }

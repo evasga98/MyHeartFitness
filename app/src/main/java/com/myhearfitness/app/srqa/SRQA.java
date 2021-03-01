@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.DoubleStream;
 
 /* Recurrence quantification analysis of symbolic recurrence plots
          RP:  the Symbolic Recurrence Plot
@@ -25,7 +26,34 @@ import java.util.List;
 
 public class SRQA {
 
-    public static void Recu_SQRA(int[][] RP, int Lmin, int I) {
+    public double RR;
+    public double DET;
+    public double DEThat;
+    public double ENTR;
+    public double L;
+    public double Lhat;
+    public List<List<Double>> V;
+    public int[] dd;
+    public int[] nd;
+
+    public SRQA() {
+
+    }
+
+    public SRQA(double RR, double DET,double DEThat, double ENTR, double L, double Lhat, List<List<Double>> V, int[] dd, int[] nd) {
+        this.RR = RR;
+        this.DET = DET;
+        this.DEThat = DEThat;
+        this.ENTR = ENTR;
+        this.L = L;
+        this.Lhat = Lhat;
+        this.V = V;
+        this.dd = dd;
+        this.nd = nd;
+    }
+
+
+    public static SRQA Recu_SRQA(int[][] RP, int Lmin, int I) {
 
         int N1 = RP.length;
         int[] Yout = new int[N1];
@@ -57,7 +85,7 @@ public class SRQA {
             SR = SR + i*S[i-1];
         }
         //System.out.println(SR);
-        int RR = SR/(N1*(N1-1));
+        double RR =(double) SR/(N1*(N1-1));
 
         /*calculate the determinism (%DET)*/
         double DET = 0.0;
@@ -65,7 +93,7 @@ public class SRQA {
         double DEThat = (double) (SR- sumColumn(Arrays.copyOfRange(S, 0,  Lmin-1)))/N1;
 
         /*calculate the ENTR = entropy (ENTR)*/
-        double entropy = 0;
+        double ENTR = 0;
         int sumS = sumColumn(S);
         double[] pp = new double[N1];
         for (int i = 0; i < N1; i++)
@@ -80,6 +108,8 @@ public class SRQA {
             if(S_subarray[j] !=0 ) {  F.add(j);}
         }
 
+        int[] dd = new int[0];
+        int[] nd = getIncrementingArray(2, S.length+1);;
         if(F.size() != 0)
         {
             for (int m = 0; m < F.size(); m++)
@@ -90,15 +120,15 @@ public class SRQA {
 
             for (int n = 0; n < pp_subarray.length; n++)
             {
-                entropy += pp_subarray[n]*Math.log(pp_subarray[n]);
+                ENTR += pp_subarray[n]*Math.log(pp_subarray[n]);
             }
-            entropy = entropy*(-1);
-            int[] dd = Arrays.copyOfRange(S, F.get(0),  F.get(F.size()-1)+1);
-            int[] nd = getIncrementingArray(2, S.length+1);
+            ENTR = ENTR*(-1);
+            dd = Arrays.copyOfRange(S, F.get(0),  F.get(F.size()-1)+1);
         }
 
         /*calculate Averaged diagonal line length (L)*/
         double L = 0;
+        double Lhat = 0;
         if (sumColumn(S_subarray) != 0)
         {
             int [] inc = getIncrementingArray(1, Lmin-1);
@@ -111,7 +141,7 @@ public class SRQA {
                 s += inc[i]*S_1[i];
             }
             L += (SR - s) /sumColumn(S_2);
-            double Lhat = L/N1;
+            Lhat = L/N1;
         }
 
         /*calculate vertical line length distributions (V)*/
@@ -161,16 +191,49 @@ public class SRQA {
         int[] distV = hist(sv, av.length);
 
         double[] pV = new double[distV.length];
-        for (int i = 0; i < distV.length; i++)
+        for (int i = 0; i < pV.length; i++)
         {
+
+
             pV[i] = (double) distV[i]/sumColumn(distV);
         }
 
-        System.out.println(Arrays.toString(pV));
+
+        double entV = 0;
+        for (int i = 0; i < distV.length; i++)
+        {
+            if(pV[i] == 0) pV[i] = 1;
+            entV += pV[i] * Math.log(pV[i]);
+        }
+        if (entV !=0) entV = entV*(-1);
+
+
+        int[] sumV_arr= new int[av.length];
+        for (int i = 0; i < av.length; i++)
+        {
+            sumV_arr[i] += av[i] * distV[i];
+        }
+
+        int sumV = 0;
+        if(sumColumn(distV)!= 0) sumV = sumColumn(sumV_arr)/sumColumn(distV);
+
+        List<List<Double>> V = new ArrayList<>();
+        if(av.length == 0 )  V.add(new ArrayList<>(Arrays.asList(0.0, 1.0, entV, (double)sumV)));
+        else {
+            for (int i = 0; i < av.length; i++)
+            {
+            List<Double> list = new ArrayList<>(Arrays.asList((double)av[i], (double)distV[i], entV, (double)sumV));
+            V.add(list);
+            }
+        }
+
+
+        return new SRQA(RR, DET, DEThat, ENTR, L, Lhat, V, dd, nd);
+
 
 
     }
-    public static int[] hist(int[] scores, int n) {
+    private static int[] hist(int[] scores, int n) {
         int[] hist = new int[n];
         for (int score : scores)
         {
