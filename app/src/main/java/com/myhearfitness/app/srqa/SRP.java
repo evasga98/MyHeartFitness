@@ -82,7 +82,7 @@ public class SRP {
 
             A.add(multiplyMatrix(loc_arr, transposeMatrix(loc_arr)));
 
-            double srr_val = Math.pow(((double)sumColumn(sumRow(A.get(k)))) / (T-(d*(m-1))), 2);
+            double srr_val = (double)sumColumn(sumRow(A.get(k))) / Math.pow((T-(d*(m-1))), 2);
             SRR.add(srr_val);
         }
 
