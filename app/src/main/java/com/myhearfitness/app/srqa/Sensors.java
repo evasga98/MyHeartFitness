@@ -68,6 +68,8 @@ public class Sensors {
 
         int lw = Math.round((data.size()/w));
         List<Integer> pos_af = new ArrayList<Integer>(Collections.nCopies(lw, 0));
+        
+        List<List<Double>> measure = null;
 
         List<Boolean> dataD;
         List<Double> dataRR;
@@ -107,40 +109,19 @@ public class Sensors {
             int[][] Ai = srp.A.get((int) (factorial(m)-1));
 
             SRQA srqa_inc = SRQA.Recu_SRQA(Ai, 2, 0);
-//            System.out.print("RR " + srqa_inc.RR);
-//            System.out.print(" DET " +srqa_inc.DET);
-//            System.out.print(" DEThat " + srqa_inc.DEThat);
-//            System.out.print(" ENTR " + srqa_inc.ENTR);
-//            System.out.print(" L " +srqa_inc.L);
-//            System.out.print(" Lhat " +srqa_inc.Lhat);
-//            System.out.print(" V " +srqa_inc.V.toString());
-//            System.out.print(" dd " +Arrays.toString(srqa_inc.dd));
-//            System.out.println(" nd " +Arrays.toString(srqa_inc.nd));
-//            System.out.println("                 ");
 
             SRQA srqa_dec = SRQA.Recu_SRQA(srp.A.get(0), 2, 0);
-//            System.out.print("RR " + srqa_dec.RR);
-//            System.out.print(" DET " +srqa_dec.DET);
-//            System.out.print(" DEThat " + srqa_dec.DEThat);
-//            System.out.print(" ENTR " + srqa_dec.ENTR);
-//            System.out.print(" L " +srqa_dec.L);
-//            System.out.print(" Lhat " +srqa_dec.Lhat);
-//            System.out.print(" V " +srqa_dec.V.toString());
-//            System.out.print(" dd " +Arrays.toString(srqa_dec.dd));
-//            System.out.println(" nd " +Arrays.toString(srqa_dec.nd));
-//            System.out.println("                  ");
-
+            
             SRQA srqa_all = SRQA.Recu_SRQA(srp.matriz, 2, 0);
-//            System.out.print("RR " + srqa_all.RR);
-//            System.out.print(" DET " +srqa_all.DET);
-//            System.out.print(" DEThat " + srqa_all.DEThat);
-//            System.out.print(" ENTR " + srqa_all.ENTR);
-//            System.out.print(" L " +srqa_all.L);
-//            System.out.print(" Lhat " +srqa_all.Lhat);
-//            System.out.print(" V " +srqa_all.V.toString());
-//            System.out.print(" dd " +Arrays.toString(srqa_all.dd));
-//            System.out.println(" nd " +Arrays.toString(srqa_all.nd));
-//            System.out.println("                  ");
+            
+            List<Double> m_k = new ArrayList<>();
+            m_k.addAll(Arrays.asList(mean, median, VRR, VmeRR));
+            m_k.addAll(srp.SRR);
+            m_k.addAll(Arrays.asList(srqa_all.DET, srqa_all.ENTR, 
+                    srqa_inc.V.get(0).get(2), srqa_dec.V.get(0).get(2),
+                    srqa_inc.V.get(0).get(3), srqa_dec.V.get(0).get(3)));
+            
+            measure.add(m_k);
 
         }
     }
