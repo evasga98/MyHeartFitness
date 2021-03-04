@@ -56,7 +56,7 @@ public class SRQA {
     public static SRQA Recu_SRQA(int[][] RP, int Lmin, int I) {
 
         int N1 = RP.length;
-        int[] Yout = new int[N1];
+        int[] Yout;
         int[] S = new int[N1];
 
         Yout = getYout(N1, RP);
@@ -69,14 +69,13 @@ public class SRQA {
             }
         }
 
+
         if(I==1)
         {
             int[][] RP_transpose = transposeMatrix(RP);
             Yout = getYout( RP_transpose.length, RP_transpose);
             S = Yout;
         }
-        //System.out.println(Arrays.toString(Yout));
-        //System.out.println(Arrays.toString(S));
 
         /*calculate the recurrence rate (RR)*/
         int SR = 0;
@@ -84,7 +83,6 @@ public class SRQA {
         {
             SR = SR + i*S[i-1];
         }
-        //System.out.println(SR);
         double RR =(double) SR/(N1*(N1-1));
 
         /*calculate the determinism (%DET)*/
@@ -100,6 +98,7 @@ public class SRQA {
         {
             pp[i] = (double) S[i]/sumS;
         }
+
         //get index of values not equal to 0
         List<Integer> F = new ArrayList<>();
         int[] S_subarray = Arrays.copyOfRange(S, Lmin-1,  N1-1);
@@ -108,15 +107,17 @@ public class SRQA {
             if(S_subarray[j] !=0 ) {  F.add(j);}
         }
 
+
         int[] dd = new int[0];
         int[] nd = getIncrementingArray(2, S.length+1);;
+        double[] pp_subarray = new double[F.size()];
         if(F.size() != 0)
         {
             for (int m = 0; m < F.size(); m++)
             {
-                F.set(m,  F.get(m) + Lmin -1);
+                F.set(m, F.get(m) +Lmin -1);
+                pp_subarray[m] = pp[F.get(m)];
             }
-            double[] pp_subarray = Arrays.copyOfRange(pp, F.get(0),  F.get(F.size()-1)+1);
 
             for (int n = 0; n < pp_subarray.length; n++)
             {
@@ -124,7 +125,9 @@ public class SRQA {
             }
             ENTR = ENTR*(-1);
             dd = Arrays.copyOfRange(S, F.get(0),  F.get(F.size()-1)+1);
+
         }
+
 
         /*calculate Averaged diagonal line length (L)*/
         double L = 0;
