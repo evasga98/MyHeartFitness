@@ -3,32 +3,22 @@ package com.myhearfitness.app.srqa;
 
 
 import android.content.Context;
-import android.os.Build;
-import android.util.Log;
-
-import androidx.annotation.RequiresApi;
-
-import com.github.chen0040.data.frame.BasicDataFrame;
-import com.github.chen0040.data.frame.DataFrame;
-import com.github.chen0040.data.frame.DataRow;
+import android.os.Environment;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.IntSummaryStatistics;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.DoubleStream;
 
 
-import static com.myhearfitness.app.srqa.LogisticRegression.*;
-
+import smile.classification.LogisticRegression;
 
 import static com.myhearfitness.app.srqa.functions.*;
 
@@ -42,7 +32,7 @@ public class Sensors {
         List<List<String>> data = new ArrayList<>();
         InputStreamReader is;
         try {
-            is = new InputStreamReader(context.getAssets().open("datos_min.csv"));
+            is = new InputStreamReader(context.getAssets().open("datos_2.csv"));
             BufferedReader reader = new BufferedReader(is);
             reader.readLine();
             String line;
@@ -64,35 +54,33 @@ public class Sensors {
         List<Double> RR = new ArrayList<>();
 
         // load the Boolean time series of AF detections for RR
-        List<Boolean> D = new ArrayList<>();
+        List<Double> D = new ArrayList<>();
 
         // define window size
         int w = 30;
 
         for(int i=0; i < data.size();  i++ ) {
             RR.add(Double.parseDouble(data.get(i).get(1)));
-            D.add(Boolean.parseBoolean(data.get(i).get(2)));
+            D.add(Double.parseDouble(data.get(i).get(2)));
         }
 
         int lw = Math.round((data.size()/w));
-        //List<Integer> pos_af = new ArrayList<Integer>(Collections.nCopies(lw, 0));
+
         int[] pos_af = new int[lw];
-        
-        List<List<Double>> measure = new ArrayList<>();
-        double[][] target2 = new double[166][];
-        List<Boolean> dataD;
+        double [][] measure = new double[lw][];
+
+        List<Double> dataD;
         List<Double> dataRR;
         for(int k=0; k < lw;  k++ ) {
             // take a time series of RR interval of length w
 
             dataRR =  RR.subList(( w*k),(k+1)*w);
-            //System.out.println("Inicio: " + dataRR.toString());
 
             /* a window is defined to be in AF iif number of AF (Atrial Fibrilation) detections in data is >=w/2
             define pos_af as the boolean vector identifying the AF windows*/
             dataD = D.subList(( w*k),(k+1)*w);
 
-            if (Collections.frequency(dataD, 1) > w/2) {
+            if (Collections.frequency(dataD, 1.0) > w/2) {
                 pos_af[k] = 1;
             }
 
@@ -109,7 +97,7 @@ public class Sensors {
             // person coefficient of variation
             double VRR = getSTD(dataRR)/getMean(dataRR);
 
-            //mean absolute dispersion with respect to the median
+            // mean absolute dispersion with respect to the median
             double VmeRR = getMeanAbsDispersion(dataRR, median);
 
             int m = 3;
@@ -130,39 +118,29 @@ public class Sensors {
             m_k.addAll(Arrays.asList(srqa_all.DET, srqa_all.ENTR, 
                     srqa_inc.V.get(0).get(2), srqa_dec.V.get(0).get(2),
                     srqa_inc.V.get(0).get(3), srqa_dec.V.get(0).get(3)));
-            
-            measure.add(m_k);
-            double[] target = new double[m_k.size()];
-            for (int i = 0; i < target.length; i++) {
-                target[i] = m_k.get(i);                // java 1.5+ style (outboxing)
+
+            double[] row = new double[m_k.size()];
+            for (int i = 0; i < m_k.size(); i++) {
+                row[i] = m_k.get(i).doubleValue();
             }
-            target2[k] = target;
-
-
-
-
+            measure[k]  = row;
         }
 
+        /*compute the logistic model*/
+        LogisticRegression.Binomial bin = LogisticRegression.binomial(measure, pos_af,0.0, 1E-5, 100);
 
-        System.out.println(target2.length);
-        System.out.println(target2[0].length);
+        /*compute the estimated probability of AF*/
+        double[] prob = new double[measure.length];
+        for (int i = 0; i < measure.length; i++){
+            double[] posteriori = new   double[2];
+            bin.predict(measure[i], posteriori);
+            prob[i] = posteriori[1];
 
-        double[] w2 =  {0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1};
-        float[][]x  = {{0.8f,0.2f,0.3f,0.1f,0.1f,1f},{0.3f,0.1f,0.4f,0.3f,0.2f,1f},{0.1f,0.2f,0.3f,0.3f,0.7f,1f},{0.1f,0.3f,0.1f,0.5f,0.7f,1f}};
-        float[] label = {1,1,0,0};
-        int i = 0;
-        while(i<100){
-            w2=getNewW(w2,target2,pos_af);
-            System.out.println("w :"+Arrays.toString(w2));
-            System.out.println("y : "+Arrays.toString(printy(w2,target2)));
-            System.out.println("loss £º"+loss(w2,target2,pos_af));
-            i++;
         }
+        System.out.println(Arrays.toString(prob));
+
+
 
     }
-
-
-
-
 
 }

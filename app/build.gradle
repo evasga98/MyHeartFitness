@@ -29,8 +29,8 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-// https://mvnrepository.com/artifact/nz.ac.waikato.cms.weka/weka-stable
-    implementation 'com.github.chen0040:java-data-frame:1.0.11'
+// https://mvnrepository.com/artifact/com.github.haifengl/smile-core
+    implementation group: 'com.github.haifengl', name: 'smile-core', version: '2.6.0'
 
     implementation 'com.opencsv:opencsv:5.3'
     //noinspection GradleCompatible
