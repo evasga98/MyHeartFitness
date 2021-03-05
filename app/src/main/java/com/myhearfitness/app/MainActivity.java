@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         //this.deleteDatabase("myheartfitness.db");
 
 
-        Sensors.readCSV(this);
+
 
 
 
@@ -69,7 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
     // method to send a notification to the user
     public void showNotification(String title, String message, Intent intent, int reqCode) {
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
+        Sensors.readCSV(this);
+       /* PendingIntent pendingIntent = PendingIntent.getActivity(this, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
         String CHANNEL_ID = "channel_name";// The id of the channel.
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID, name, importance);
             notificationManager.createNotificationChannel(mChannel);
         }
-        notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id
+        notificationManager.notify(reqCode, notificationBuilder.build()); // 0 is the request code, it should be unique id*/
     }
 
     // select fragment in code

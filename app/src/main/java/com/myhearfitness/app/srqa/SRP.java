@@ -45,7 +45,6 @@ public class SRP {
         double mean;
         double std;
 
-        System.out.println("List: " + x.toString());
         int ii = 0;
         for (int i = 1; i <= T -( d * (m - 1)); i++) {
             ii += 1;

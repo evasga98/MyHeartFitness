@@ -3,7 +3,10 @@ package com.myhearfitness.app.srqa;
 
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Environment;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,7 +35,7 @@ public class Sensors {
         List<List<String>> data = new ArrayList<>();
         InputStreamReader is;
         try {
-            is = new InputStreamReader(context.getAssets().open("datos_2.csv"));
+            is = new InputStreamReader(context.getAssets().open("datos_phy.csv"));
             BufferedReader reader = new BufferedReader(is);
             reader.readLine();
             String line;
@@ -60,8 +63,8 @@ public class Sensors {
         int w = 30;
 
         for(int i=0; i < data.size();  i++ ) {
-            RR.add(Double.parseDouble(data.get(i).get(1)));
-            D.add(Double.parseDouble(data.get(i).get(2)));
+            RR.add(Double.parseDouble(data.get(i).get(0)));
+            D.add(Double.parseDouble(data.get(i).get(1)));
         }
 
         int lw = Math.round((data.size()/w));
@@ -124,7 +127,9 @@ public class Sensors {
                 row[i] = m_k.get(i).doubleValue();
             }
             measure[k]  = row;
+            System.out.println(k);
         }
+
 
         /*compute the logistic model*/
         LogisticRegression.Binomial bin = LogisticRegression.binomial(measure, pos_af,0.0, 1E-5, 100);
@@ -135,12 +140,81 @@ public class Sensors {
             double[] posteriori = new   double[2];
             bin.predict(measure[i], posteriori);
             prob[i] = posteriori[1];
+        }
+
+        double[] Tlist = new double[(int)(1/0.001)];
+        Tlist[0] = 0.001;
+        for (int i = 1; i < Tlist.length; i++){
+            Tlist[i] = Tlist[i-1] +0.001;
+        }
+
+        double [] dista = new   double[Tlist.length];
+        double[] xc = new   double[Tlist.length];
+        double[] yc = new   double[Tlist.length];
+        double ths, TPR, FPR, SPC = 0, ACC;
+
+        for (int i = 1; i < Tlist.length; i++){
+            ths = Tlist[i];
+            int TP = 0, FP=0, TN=0, FN=0;
+            for (int j = 1; j < pos_af.length; j++) {
+                if (pos_af[j] > 0) {
+                    if (prob[j] > ths) TP++;        /*true possitive*/
+                    else if (prob[j] < ths) FN++;   /*false negative*/
+                } else if (pos_af[j] == 0) {
+                    if (prob[j] > ths) FP++;        /*false positive*/
+                    else if (prob[j] < ths) TN++;   /*true negative*/
+                }
+            }
+
+            /*specificity*/
+            TPR = TP/(TP+FN);
+            FPR = FP/(FP+TN);
+
+            /*specificity*/
+            SPC = 1 - FPR;
+            xc[i] = FPR;
+            yc[i] = TPR;
+            dista[i] = Math.pow(FPR, 2) + Math.pow((1-TPR), 2);
+        }
+
+        /* threshold*/
+        double ths0  = 0;
+        List<Double> dista_list = Arrays.asList(ArrayUtils.toObject(dista));
+        for (int i = 1; i < dista.length; i++){
+            if (dista[i] == Collections.min(dista_list)) {
+                System.out.println(i);
+                ths0 = Tlist[i];
+                break;
+            }
+        }
+        System.out.println(Collections.min(dista_list));
+
+        int[] y = pos_af;
+        /*compute the sensitivity, specificity and accuracy of the model*/
+        int VP = 0, VN=0, FN=0, FP=0;
+        for (int j = 1; j < pos_af.length; j++) {
+            if (y[j] > 0) {
+                if (prob[j] > ths0) VP++;
+                else if (prob[j] < ths0) FN++;
+            } else if (y[j] == 0) {
+                if (prob[j] > ths0) FP++;
+                else if (prob[j] < ths0) VN++;
+            }
+        }
+
+        TPR = (double) VP/(VP+FN);               /*sensitivity*/
+        FPR = (double) FP/ (FP+VN);              /*razón de falsas alarmas*/
+        SPC = (double) 1-FPR;                    /*specificity*/
+        ACC = (double) (VP+VN)/(VP+FN+FP+VN);    /*accuracy*/
+
+//        System.out.println(TPR);
+//        System.out.println(FPR);
+//        System.out.println(SPC);
+//        System.out.println(ACC);
+//        System.out.println(ths0);
 
         }
-        System.out.println(Arrays.toString(prob));
 
 
-
-    }
 
 }
