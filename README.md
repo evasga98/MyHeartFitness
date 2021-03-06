@@ -12,6 +12,6 @@ The objective is to create a simple and user-friendly application for Android de
 - [x] Read data from CSV file.
 - [x] Create SRP function.
 - [x] Create SRQA function
-- [ ] Read ECG from pdf file.
 - [x] Apply SRQA to RR intervals.
-
+- [ ] Run algorithm in background task.
+- [ ] Read ECG from pdf file.
