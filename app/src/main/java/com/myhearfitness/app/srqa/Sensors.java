@@ -35,7 +35,7 @@ public class Sensors {
         List<List<String>> data = new ArrayList<>();
         InputStreamReader is;
         try {
-            is = new InputStreamReader(context.getAssets().open("datos_phy.csv"));
+            is = new InputStreamReader(context.getAssets().open("datos_2.csv"));
             BufferedReader reader = new BufferedReader(is);
             reader.readLine();
             String line;
@@ -63,8 +63,8 @@ public class Sensors {
         int w = 30;
 
         for(int i=0; i < data.size();  i++ ) {
-            RR.add(Double.parseDouble(data.get(i).get(0)));
-            D.add(Double.parseDouble(data.get(i).get(1)));
+            RR.add(Double.parseDouble(data.get(i).get(1)));
+            D.add(Double.parseDouble(data.get(i).get(2)));
         }
 
         int lw = Math.round((data.size()/w));
@@ -127,12 +127,12 @@ public class Sensors {
                 row[i] = m_k.get(i).doubleValue();
             }
             measure[k]  = row;
-            System.out.println(k);
+
         }
 
 
         /*compute the logistic model*/
-        LogisticRegression.Binomial bin = LogisticRegression.binomial(measure, pos_af,0.0, 1E-5, 100);
+        LogisticRegression.Binomial bin = LogisticRegression.binomial(measure, pos_af,0.0, 1E-10, 500);
 
         /*compute the estimated probability of AF*/
         double[] prob = new double[measure.length];
@@ -142,22 +142,28 @@ public class Sensors {
             prob[i] = posteriori[1];
         }
 
+
         double[] Tlist = new double[(int)(1/0.001)];
-        Tlist[0] = 0.001;
+        Tlist[0] = 0.001F;
         for (int i = 1; i < Tlist.length; i++){
-            Tlist[i] = Tlist[i-1] +0.001;
+            Tlist[i] = Tlist[i-1] + 0.001F;
         }
 
-        double [] dista = new   double[Tlist.length];
-        double[] xc = new   double[Tlist.length];
-        double[] yc = new   double[Tlist.length];
+        double [] dista = new double[Tlist.length];
+        double[] xc = new  double[Tlist.length];
+        double[] yc = new  double[Tlist.length];
         double ths, TPR, FPR, SPC = 0, ACC;
 
-        for (int i = 1; i < Tlist.length; i++){
+
+        for (int i = 0; i < Tlist.length; i++){
+            List<Integer> pos_af2 = new ArrayList<>();
+            List<Double> TP_2 = new ArrayList<>();
+            List<Double> TN_2 = new ArrayList<>();
             ths = Tlist[i];
             int TP = 0, FP=0, TN=0, FN=0;
-            for (int j = 1; j < pos_af.length; j++) {
+            for (int j = 0; j < pos_af.length; j++) {
                 if (pos_af[j] > 0) {
+                    pos_af2.add(j);
                     if (prob[j] > ths) TP++;        /*true possitive*/
                     else if (prob[j] < ths) FN++;   /*false negative*/
                 } else if (pos_af[j] == 0) {
@@ -167,38 +173,36 @@ public class Sensors {
             }
 
             /*specificity*/
-            TPR = TP/(TP+FN);
-            FPR = FP/(FP+TN);
+            TPR = (double)TP/(TP+FN);
+            FPR =(double) FP/(FP+TN);
 
             /*specificity*/
-            SPC = 1 - FPR;
+            SPC = (double) 1 - FPR;
             xc[i] = FPR;
             yc[i] = TPR;
-            dista[i] = Math.pow(FPR, 2) + Math.pow((1-TPR), 2);
+            dista[i] = (double) ( Math.pow(FPR, 2) + Math.pow((1-TPR), 2));
         }
 
         /* threshold*/
         double ths0  = 0;
         List<Double> dista_list = Arrays.asList(ArrayUtils.toObject(dista));
-        for (int i = 1; i < dista.length; i++){
+        for (int i = 0; i < dista.length; i++){
             if (dista[i] == Collections.min(dista_list)) {
-                System.out.println(i);
                 ths0 = Tlist[i];
                 break;
             }
         }
-        System.out.println(Collections.min(dista_list));
 
         int[] y = pos_af;
         /*compute the sensitivity, specificity and accuracy of the model*/
         int VP = 0, VN=0, FN=0, FP=0;
-        for (int j = 1; j < pos_af.length; j++) {
-            if (y[j] > 0) {
-                if (prob[j] > ths0) VP++;
-                else if (prob[j] < ths0) FN++;
-            } else if (y[j] == 0) {
-                if (prob[j] > ths0) FP++;
-                else if (prob[j] < ths0) VN++;
+        for (int i = 0; i < pos_af.length; i++) {
+            if (y[i] > 0) {
+                if (prob[i] > ths0) VP++;
+                else if (prob[i] < ths0) FN++;
+            } else if (y[i] == 0) {
+                if (prob[i] > ths0) FP++;
+                else if (prob[i] < ths0) VN++;
             }
         }
 
@@ -207,14 +211,14 @@ public class Sensors {
         SPC = (double) 1-FPR;                    /*specificity*/
         ACC = (double) (VP+VN)/(VP+FN+FP+VN);    /*accuracy*/
 
-//        System.out.println(TPR);
-//        System.out.println(FPR);
-//        System.out.println(SPC);
-//        System.out.println(ACC);
-//        System.out.println(ths0);
+        int AF = 0, NS =0;
+        for (int i = 0; i < prob.length; i++) {
+            if (prob[i] > ths0 ) AF++;
+            else  NS ++;
 
         }
 
+        }
 
 
 }
