@@ -13,5 +13,5 @@ The objective is to create a simple and user-friendly application for Android de
 - [x] Create SRP function.
 - [x] Create SRQA function
 - [x] Apply SRQA to RR intervals.
-- [ ] Run algorithm in background task.
+- [x] Run algorithm in background task.
 - [ ] Read ECG from pdf file.
