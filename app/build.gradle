@@ -29,7 +29,7 @@ android {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation 'androidx.appcompat:appcompat:1.2.0'
-// https://mvnrepository.com/artifact/com.github.haifengl/smile-core
+    implementation 'androidx.biometric:biometric:1.1.0'
     implementation group: 'com.github.haifengl', name: 'smile-core', version: '2.6.0'
     implementation "androidx.work:work-runtime:2.5.0"
     implementation 'com.opencsv:opencsv:5.3'
