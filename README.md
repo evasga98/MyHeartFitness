@@ -8,7 +8,7 @@ The objective is to create a simple and user-friendly application for Android de
 - [x] Show user data.
 - [x] Send notifications to the user.
 - [x] Use SQLite to store user data.
-- [ ] Open app with code/fingerprint.
+- [x] Open app with code/fingerprint.
 - [x] Read data from CSV file.
 - [x] Create SRP function.
 - [x] Create SRQA function
