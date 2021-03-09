@@ -17,14 +17,19 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.LiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.work.Constraints;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.myhearfitness.app.db.DBHelper;
-import com.myhearfitness.app.srqa.Sensors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -41,10 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //this.deleteDatabase("myheartfitness.db");
 
-
-
-
-
+        //Sensors.readCSV(this);
 
         // create database and tables
         dbHelper = new DBHelper(this);
@@ -68,9 +70,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // method to send a notification to the user
-    public void showNotification(String title, String message, Intent intent, int reqCode) {
-        Sensors.readCSV(this);
-       /* PendingIntent pendingIntent = PendingIntent.getActivity(this, reqCode, intent, PendingIntent.FLAG_ONE_SHOT);
+    public void notify(String title, String message, int reqCode) {
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent intent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
         String CHANNEL_ID = "channel_name";// The id of the channel.
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_notifications_black_24dp)
@@ -78,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 .setContentText(message)
                 .setAutoCancel(true)
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setContentIntent(pendingIntent);
+                .setContentIntent(intent);
         NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Channel Name";// The user-visible name of the channel.
@@ -93,6 +97,31 @@ public class MainActivity extends AppCompatActivity {
     public void selectItem(int id){
         System.out.println("Selected");
         navView.getMenu().performIdentifierAction(id, 0);
+    }
+
+    public void startAlgorithm(){
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresBatteryNotLow(true)
+                .setRequiresStorageNotLow(true)
+                .build();
+
+        WorkManager manager = WorkManager.getInstance(this);
+
+        WorkRequest req = new OneTimeWorkRequest.Builder(AlgorithmWorker.class)
+                .setConstraints(constraints)
+                .build();
+
+        manager.enqueue(req);
+
+        LiveData<WorkInfo> status = manager.getWorkInfoByIdLiveData(req.getId());
+
+        status.observeForever( workInfo -> {
+            if (workInfo.getState() == WorkInfo.State.SUCCEEDED) {
+                notify("MyHeartFitness", "Your results are ready",  2);
+            }
+            status.removeObservers(this);
+        });
+
     }
 
 /**************************** DATABASE FUNCTIONS***********************************/

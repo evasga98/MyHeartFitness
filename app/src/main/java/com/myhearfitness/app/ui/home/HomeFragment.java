@@ -83,14 +83,7 @@ public class HomeFragment extends Fragment {
         button_notify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                try {
-//                    TimeUnit.SECONDS.sleep(10);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-                int reqCode = 1;
-                Intent intent = new Intent( getActivity().getApplicationContext(), MainActivity.class);
-                ((MainActivity)getActivity()).showNotification("MyHeartFitness", "Your results are ready", intent, reqCode);
+                ((MainActivity)getActivity()).startAlgorithm();
             }
         });
         return root;
