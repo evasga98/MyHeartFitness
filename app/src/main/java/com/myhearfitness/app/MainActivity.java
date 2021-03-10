@@ -30,6 +30,7 @@ import androidx.work.WorkRequest;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.myhearfitness.app.db.DBHelper;
+import com.myhearfitness.app.srqa.Sensors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 notificationIntent, 0);
         String CHANNEL_ID = "channel_name";// The id of the channel.
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setSmallIcon(R.drawable.ic_logo)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setAutoCancel(true)
