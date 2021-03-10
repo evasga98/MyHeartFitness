@@ -28,11 +28,16 @@ public class AuthenticateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authenticate);
-
+        boolean authenticate = true;
+        if(!authenticate){
+            changeActivity();
+        }
+        else{
         if(biometricPrompt==null){
             biometricPrompt=new BiometricPrompt(this,executor,callback);
         }
         checkAndAuthenticate();
+        }
 
     }
 
@@ -78,9 +83,7 @@ public class AuthenticateActivity extends AppCompatActivity {
 
                 @Override
                 public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                    snack("Authenticated");
                     changeActivity();
-
                 }
 
                 @Override

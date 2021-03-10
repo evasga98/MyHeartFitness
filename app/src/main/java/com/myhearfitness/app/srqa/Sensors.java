@@ -5,6 +5,7 @@ package com.myhearfitness.app.srqa;
 import android.content.Context;
 import android.graphics.Paint;
 import android.os.Environment;
+import android.util.Log;
 
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -211,10 +212,15 @@ public class Sensors {
         SPC = (double) 1-FPR;                    /*specificity*/
         ACC = (double) (VP+VN)/(VP+FN+FP+VN);    /*accuracy*/
 
-        int AF = 0, NS =0;
+        Log.d("TPR", String.valueOf(TPR));
+        Log.d("FPR", String.valueOf(FPR));
+        Log.d("SPC", String.valueOf(SPC));
+        Log.d("ACC", String.valueOf(ACC));
+
+        int[] clasification = new int[prob.length];
+
         for (int i = 0; i < prob.length; i++) {
-            if (prob[i] > ths0 ) AF++;
-            else  NS ++;
+            if (prob[i] > ths0 ) clasification[i] = 1;
 
         }
 
