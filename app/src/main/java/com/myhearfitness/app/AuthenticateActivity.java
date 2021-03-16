@@ -6,6 +6,7 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
@@ -28,14 +29,20 @@ public class AuthenticateActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authenticate);
-        boolean authenticate = true;
-        if(!authenticate){
+
+        // check if user wants authentication
+        SharedPreferences prefs = getSharedPreferences("auth", MODE_PRIVATE);
+        boolean key = prefs.getBoolean("auth", false);
+
+        if(key!=true) {
+            System.out.println("auth: " + key);
             changeActivity();
+
         }
         else{
-        if(biometricPrompt==null){
-            biometricPrompt=new BiometricPrompt(this,executor,callback);
-        }
+            if(biometricPrompt==null){
+                biometricPrompt=new BiometricPrompt(this,executor,callback);
+            }
         checkAndAuthenticate();
         }
 

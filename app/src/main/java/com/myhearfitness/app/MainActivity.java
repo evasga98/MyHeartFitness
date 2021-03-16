@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -14,6 +15,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -122,6 +125,20 @@ public class MainActivity extends AppCompatActivity {
             }
             status.removeObservers(this);
         });
+
+    }
+
+    public void setPreferences(String value, String key){
+        SharedPreferences.Editor editor = getSharedPreferences(value, MODE_PRIVATE).edit();
+        editor.putString(value, key);
+        editor.commit();
+    }
+
+    public String getPreferences(String value){
+        SharedPreferences prefs = getSharedPreferences(value, MODE_PRIVATE);
+        String key = prefs.getString(value, "0");
+        System.out.println(key);
+        return key;
 
     }
 

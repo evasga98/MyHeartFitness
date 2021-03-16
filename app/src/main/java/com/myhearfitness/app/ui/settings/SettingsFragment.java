@@ -1,7 +1,9 @@
 package com.myhearfitness.app.ui.settings;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -10,10 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -23,6 +28,8 @@ import com.myhearfitness.app.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment {
 
@@ -56,6 +63,7 @@ public class SettingsFragment extends Fragment {
         upload = root.findViewById(R.id.button_upload);
         profilepic = root.findViewById(R.id.picture);
 
+
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +71,7 @@ public class SettingsFragment extends Fragment {
                 if(isValid){
                     ((MainActivity)getActivity()).selectItem(R.id.navigation_profile);
                 }
+
             }
         });
 
@@ -75,7 +84,24 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        Switch auth_on_off =  root.findViewById(R.id.auth_on_off);
+        auth_on_off.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    setPreferences("auth", true);
+                }
+                else {
+                    setPreferences("auth", false);
+                }
+            }
 
+        });
+
+        boolean value = getPreferences("auth");
+        if(value == true) auth_on_off.setChecked(true);
+        else auth_on_off.setChecked(false);
+        System.out.println(value);
 
         return root;
     }
@@ -89,6 +115,18 @@ public class SettingsFragment extends Fragment {
 
             if (success) profilepic.append(" "+ "\u2714");
         }
+    }
+
+    public void setPreferences(String value, boolean isChecked){
+        SharedPreferences.Editor editor = this.getActivity().getSharedPreferences(value, MODE_PRIVATE).edit();
+        editor.putBoolean(value, isChecked);
+        editor.commit();
+    }
+
+    public boolean getPreferences(String value){
+        SharedPreferences prefs = this.getActivity().getSharedPreferences(value, MODE_PRIVATE);
+        boolean key = prefs.getBoolean(value, false);
+        return key;
     }
 
     public boolean checkData(){
