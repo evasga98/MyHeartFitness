@@ -1,9 +1,12 @@
 package com.myhearfitness.app.ui.home;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,12 +25,16 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
+import com.myhearfitness.app.db.User;
 import com.myhearfitness.app.ui.profile.ProfileFragment;
 import com.myhearfitness.app.ui.settings.SettingsFragment;
+
+import java.io.File;
 
 public class HomeFragment extends Fragment {
 
@@ -38,18 +45,27 @@ public class HomeFragment extends Fragment {
         homeViewModel =
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+
+        User word = new User("", null, null);
+        homeViewModel.insert(word);
+
         final TextView textView = root.findViewById(R.id.text_home);
-        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+        homeViewModel.getLast().observe(getViewLifecycleOwner(), new Observer<User>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
+            public void onChanged(@Nullable User u) {
+
+                textView.setText(u.getName());
             }
         });
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String path = pref.getString("pic", "");
+
         // show user profile picture
         ImageView imageView = root.findViewById(R.id.imageView);
-        Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
+        Bitmap bmp = ((MainActivity)getActivity()).loadImageFromStorage(path);
         imageView.setImageBitmap(bmp);
+
 
         // button to open profile fragment
         ImageButton button =  root.findViewById(R.id.button_profile);

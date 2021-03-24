@@ -1,19 +1,32 @@
 package com.myhearfitness.app.ui.settings;
 
+import android.app.Application;
+
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SettingsViewModel extends ViewModel {
+import com.myhearfitness.app.db.Repository;
+import com.myhearfitness.app.db.User;
 
+import java.util.List;
+
+public class SettingsViewModel extends AndroidViewModel {
+
+    private Repository mRepository;
+
+    private LiveData<User> mLastWord;
+    private LiveData<List<User>> mAllWords;
     private MutableLiveData<String> mText;
 
-    public SettingsViewModel() {
+    public SettingsViewModel(Application application) {
+        super(application);
         mText = new MutableLiveData<>();
         mText.setValue("This is edit profile fragment");
+        mRepository = new Repository(application);
     }
 
-    public LiveData<String> getText() {
-        return mText;
-    }
+    public void insert(User user) { mRepository.insert(user); }
+
 }

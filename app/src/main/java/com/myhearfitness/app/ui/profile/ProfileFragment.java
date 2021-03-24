@@ -3,8 +3,6 @@ package com.myhearfitness.app.ui.profile;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 
-import android.icu.util.Calendar;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
@@ -23,17 +20,8 @@ import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 import com.myhearfitness.app.ui.settings.SettingsFragment;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.Period;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Locale;
 
@@ -47,34 +35,19 @@ public class ProfileFragment extends Fragment {
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        final TextView text_name = root.findViewById(R.id.text_name);
-        final TextView text_lastname = root.findViewById(R.id.text_lastname);
-        final TextView text_age = root.findViewById(R.id.text_age);
+        final TextView text_name = root.findViewById(R.id.name);
+        final TextView text_lastname = root.findViewById(R.id.full_name);
+        final TextView text_dob = root.findViewById(R.id.dob);
+        final ImageView image = root.findViewById(R.id.image_profile);
+        final Button button =  root.findViewById(R.id.edit_button);
 
-        // show user data
-        try {
-            Cursor data = ((MainActivity)getActivity()).getUserData();
-            data.moveToFirst();
-            text_name.setText(data.getString(1));
-            text_lastname.setText(data.getString(2));
+        text_name.setText(profileViewModel.getName().getValue());
+        text_lastname.setText(profileViewModel.getFullName().getValue());
+        text_dob.setText(profileViewModel.getDOB().getValue());
 
+        Bitmap bmp = ((MainActivity)getActivity()).loadImageFromStorage(profileViewModel.getPath().getValue());
+        image.setImageBitmap(bmp);
 
-            text_age.setText(getDate(data.getString(3)));
-
-        } catch (Exception e){
-            System.out.println(e);
-        }
-
-        // show user profile picture
-        try{
-            ImageView imageView = root.findViewById(R.id.image_profile);
-            Bitmap bmp = ((MainActivity)getActivity()).getBitmap();
-            imageView.setImageBitmap(bmp);
-        }catch (Exception e){
-            System.out.println(e);
-        }
-
-        Button button =  root.findViewById(R.id.edit_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,7 +70,5 @@ public class ProfileFragment extends Fragment {
 
         return formatter.format(dt);
     }
-
-
 
 }
