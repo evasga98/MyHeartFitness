@@ -11,6 +11,7 @@
             app:summary="Ask for authentication when opening the app"/>
     </PreferenceCategory>
 
+
     <PreferenceCategory app:title="User settings">
         <EditTextPreference
             app:key="name"

@@ -1,7 +1,6 @@
 package com.myhearfitness.app.ui.settings;
 
 import android.app.DatePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -51,13 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat  implements DateP
         });
 
         // show DOB
-        //SharedPreferences pref = getActivity().getPreferences(Context.MODE_PRIVATE);
-
-        Context hostActivity = getActivity();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(hostActivity);
-        System.out.println(prefs.getString("name", ""));
-        System.out.println(prefs.getString("birthday", ""));
-        System.out.println(prefs.getBoolean("auth", true));
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         birthday.setSummary(prefs.getString("birthday", ""));
 
     }
@@ -87,9 +80,10 @@ public class SettingsFragment extends PreferenceFragmentCompat  implements DateP
         if (reqCode == 1 && data != null) {
             Uri selectedImage = data.getData();
 
-            String path = ((MainActivity)getActivity()).newUserPic(selectedImage);
+            String path = ((MainActivity)getActivity()).setUserPic(selectedImage);
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SharedPreferences.Editor editor = pref.edit();
+            System.out.println( path +"/profile.jpg");
             editor.putString("pic", path);
             editor.commit();
         }

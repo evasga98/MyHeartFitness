@@ -5,10 +5,8 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
 import com.myhearfitness.app.db.Repository;
-import com.myhearfitness.app.db.User;
 
 import java.util.List;
 
@@ -16,8 +14,8 @@ public class SettingsViewModel extends AndroidViewModel {
 
     private Repository mRepository;
 
-    private LiveData<User> mLastWord;
-    private LiveData<List<User>> mAllWords;
+//    private LiveData<User> mLastWord;
+//    private LiveData<List<User>> mAllWords;
     private MutableLiveData<String> mText;
 
     public SettingsViewModel(Application application) {
@@ -27,6 +25,6 @@ public class SettingsViewModel extends AndroidViewModel {
         mRepository = new Repository(application);
     }
 
-    public void insert(User user) { mRepository.insert(user); }
+//    public void insert(User user) { mRepository.insert(user); }
 
 }
