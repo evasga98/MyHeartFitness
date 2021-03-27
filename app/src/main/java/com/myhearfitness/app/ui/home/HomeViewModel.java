@@ -1,44 +1,46 @@
 package com.myhearfitness.app.ui.home;
 
 import android.app.Application;
-import android.graphics.Bitmap;
+import android.content.SharedPreferences;
 import android.widget.ImageView;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.preference.PreferenceManager;
 
-import com.myhearfitness.app.MainActivity;
-import com.myhearfitness.app.R;
 import com.myhearfitness.app.db.Repository;
-import com.myhearfitness.app.db.User;
+import com.myhearfitness.app.db.Results;
 
 import java.util.List;
 
 public class HomeViewModel extends AndroidViewModel {
     private Repository mRepository;
-    private LiveData<User> mLastWord;
-    private LiveData<List<User>> mAllWords;
+    LiveData<List<Results>> mAllResults;
 
     private MutableLiveData<String> home_text;
-    private ImageView imageView;
+    private MutableLiveData<String> d_name;
 
     public HomeViewModel(Application application) {
         super(application);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplication());
+        String name = prefs.getString("name", "");
+
+        d_name = new MutableLiveData<>();
+        if(name == "") d_name.setValue("¡Hola!");
+        else d_name.setValue((String) ("¡Hola, " + name + "!"));
+
         home_text = new MutableLiveData<>();
         home_text.setValue("¡Hola!");
+
+
         mRepository = new Repository(application);
-        mAllWords = mRepository.getAllWords();
-        mLastWord = mRepository.getLast();
-
+        mAllResults = mRepository.getAllResults();
     }
 
-    public LiveData<String> getHomeText() {
-        return home_text;
+    public LiveData<String> getName() {
+        return d_name;
     }
-    LiveData<List<User>> getAllWords() { return mAllWords; }
-    LiveData<User> getLast() { return mLastWord; }
-
-    public void insert(User user) { mRepository.insert(user); }
+    LiveData<List<Results>> getAllResults() { return mAllResults; }
 }
