@@ -3,21 +3,16 @@ package com.myhearfitness.app;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.widget.CompoundButton;
-import android.widget.Switch;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -33,46 +28,27 @@ import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.myhearfitness.app.db.DBHelper;
 import com.myhearfitness.app.db.Repository;
-import com.myhearfitness.app.db.User;
-import com.myhearfitness.app.srqa.Sensors;
-import com.myhearfitness.app.ui.settings.SettingsFragment;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
-    SQLiteDatabase db;
-
-    private DBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //this.deleteDatabase("myheartfitness.db");
-        Repository mRepository;
-
-        //Sensors.readCSV(this);
-
-        // create database and tables
-        dbHelper = new DBHelper(this);
-        db = dbHelper.open();
-
-
-        // set default user pic
-        Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
-        newUserPic(imageUri);
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
+
+        //set default user pic
+        defaultUserPic();
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -116,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         navView.getMenu().performIdentifierAction(id, 0);
     }
 
+    //start algorithm with a worker
     public void startAlgorithm(){
         Constraints constraints = new Constraints.Builder()
                 .setRequiresBatteryNotLow(true)
@@ -141,23 +118,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setPreferences(String value, String key){
-        SharedPreferences.Editor editor = getSharedPreferences(value, MODE_PRIVATE).edit();
-        editor.putString(value, key);
-        editor.commit();
+
+    private void defaultUserPic(){
+        // set default user pic
+        Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
+
+        File directory = this.getDir("imageDir", Context.MODE_PRIVATE);
+        File file = new File(directory,"profile.jpg");
+        if (!file.exists()) {
+            setUserPic(imageUri);
+        }
     }
 
-    public String getPreferences(String value){
-        SharedPreferences prefs = getSharedPreferences(value, MODE_PRIVATE);
-        String key = prefs.getString(value, "0");
-        System.out.println(key);
-        return key;
-
-    }
-
-/**************************** DATABASE FUNCTIONS***********************************/
-
-    public String newUserPic(Uri uri) {
+    public String setUserPic(Uri uri) {
         try {
             InputStream input = getContentResolver().openInputStream(uri);
             if (input == null) {
@@ -196,46 +169,20 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return directory.getAbsolutePath();
-//        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//        bmp.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-//        byte[] img = bos.toByteArray();
-//
-//        ContentValues contentValues = new ContentValues();
-//        contentValues.put("data", img);
-//        db.insert("ProfilePic", null, contentValues);
     }
 
-    public Bitmap getBitmap(){
-        Cursor resultSet = db.rawQuery("SELECT * FROM ProfilePic WHERE   _ID = (SELECT MAX(_ID)  FROM ProfilePic)", null);
-        resultSet.moveToFirst();
-        byte[] blob = resultSet.getBlob(1);
-        Bitmap bitmap = BitmapFactory.decodeByteArray(blob , 0, blob.length);
-        return bitmap;
-    }
     public Bitmap loadImageFromStorage(String path)
     {
-
         try {
             File f=new File(path, "profile.jpg");
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
-
         }
         catch (FileNotFoundException e)
         {
             e.printStackTrace();
             return null;
         }
-
-    }
-
-    public void setUserData(ContentValues cv){
-        db.insert("UserData", null, cv);
-    }
-
-    public Cursor  getUserData(){
-        Cursor resultSet = db.rawQuery("SELECT * FROM UserData WHERE   _ID = (SELECT MAX(_ID)  FROM UserData)", null);
-        return resultSet;
     }
 
 
