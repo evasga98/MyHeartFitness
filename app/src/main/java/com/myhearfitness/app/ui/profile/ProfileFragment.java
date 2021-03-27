@@ -1,5 +1,8 @@
 package com.myhearfitness.app.ui.profile;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 
@@ -15,7 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.preference.PreferenceManager;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 import com.myhearfitness.app.ui.settings.SettingsFragment;
@@ -35,20 +40,25 @@ public class ProfileFragment extends Fragment {
                 ViewModelProviders.of(this).get(ProfileViewModel.class);
         View root = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String path = pref.getString("pic", "");
+
+        // show user data
         final TextView text_name = root.findViewById(R.id.name);
         final TextView text_lastname = root.findViewById(R.id.full_name);
         final TextView text_dob = root.findViewById(R.id.dob);
-        final ImageView image = root.findViewById(R.id.image_profile);
-        final Button button =  root.findViewById(R.id.edit_button);
-
         text_name.setText(profileViewModel.getName().getValue());
         text_lastname.setText(profileViewModel.getFullName().getValue());
         text_dob.setText(profileViewModel.getDOB().getValue());
 
-        Bitmap bmp = ((MainActivity)getActivity()).loadImageFromStorage(profileViewModel.getPath().getValue());
-        image.setImageBitmap(bmp);
+        //show profile picture
+        final ImageView profile_pic = root.findViewById(R.id.image_profile);
+        Bitmap bmp = ((MainActivity)getActivity()).loadImageFromStorage(path);
+        profile_pic.setImageBitmap(bmp);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        // edit user data button
+        final Button edit_button =  root.findViewById(R.id.edit_button);
+        edit_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((MainActivity)getActivity()).selectItem(R.id.navigation_settings);
@@ -60,15 +70,35 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        // remove all results button
+        final Button delete_button =  root.findViewById(R.id.delete_button);
+        delete_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                //Yes button clicked
+                                profileViewModel.deleteAll();
+                                Snackbar.make(v, "All results were deleted", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                //No button clicked
+                                break;
+                        }
+                    }
+                };
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Are you sure you want to delete all your results?").setTitle("Confirm").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
+            }
+        });
+
         return root;
-    }
-
-    private String getDate(String date) throws ParseException {
-        SimpleDateFormat dob = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault());
-        Date dt = dob.parse(date);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-
-        return formatter.format(dt);
     }
 
 }

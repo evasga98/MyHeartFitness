@@ -9,8 +9,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.preference.PreferenceManager;
 
-public class ProfileViewModel extends AndroidViewModel {
+import com.myhearfitness.app.db.Repository;
 
+public class ProfileViewModel extends AndroidViewModel {
+    private Repository mRepository;
     private MutableLiveData<String> d_name;
     private MutableLiveData<String> d_fullname;
     private MutableLiveData<String> d_dob;
@@ -37,6 +39,9 @@ public class ProfileViewModel extends AndroidViewModel {
         d_path = new MutableLiveData<>();
         d_path.setValue(path);
 
+        mRepository = new Repository(application);
+
+
     }
 
     public LiveData<String> getName() {
@@ -51,5 +56,6 @@ public class ProfileViewModel extends AndroidViewModel {
     public LiveData<String> getPath() {
         return d_path;
     }
+    public void deleteAll(){mRepository.deleteAll();}
 
 }

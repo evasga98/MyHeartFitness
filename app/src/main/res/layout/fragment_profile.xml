@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="320dp">
         <LinearLayout
-            android:background="@drawable/gradientblue"
+            android:background="@drawable/gradient_blue"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:orientation="vertical">
@@ -36,7 +36,6 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wiliam Snoe"
                 android:textColor="#fff"
                 android:textStyle="bold"
                 android:textSize="21sp"/>
@@ -55,8 +54,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_baseline_person_outline_24"/>
             <TextView
                 android:id="@+id/full_name"
@@ -64,8 +63,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="Wiliam@gmail.com"/>
+                android:paddingLeft="20dp" />
         </LinearLayout>
         <LinearLayout
             android:layout_marginTop="25dp"
@@ -74,8 +72,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <ImageView
-                android:layout_width="36dp"
-                android:layout_height="36dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_baseline_calendar_today_24"/>
             <TextView
                 android:id="@+id/dob"
@@ -83,19 +81,30 @@
                 android:layout_gravity="center_vertical"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="20dp"
-                android:text="+266 225 225"/>
+                android:paddingLeft="20dp" />
         </LinearLayout>
 
     </LinearLayout>
+
     <Button
         android:id="@+id/edit_button"
-        android:textColor="#fff"
-        android:background="@drawable/ic_background_blue"
-        android:layout_marginTop="35dp"
+        android:layout_width="102dp"
+        android:layout_height="29dp"
         android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit"/>
+        android:layout_marginTop="35dp"
+        android:background="@drawable/gradient_blue_rounded"
+        android:text="Edit profile"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="145dp"
+        android:layout_height="33dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/gradient_orange_rounded"
+        android:text="Delete results"
+        android:textColor="#fff" />
+
 
 </LinearLayout>
