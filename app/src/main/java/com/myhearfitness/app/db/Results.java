@@ -12,13 +12,18 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 
+import smile.stat.Hypothesis;
+
 @Entity(tableName = "results_table")
 @TypeConverters({Converters.class})
 public class Results {
 
-    public Results(@NonNull int[] results, double accuracy) {
+    public Results(@NonNull int[] results, double accuracy, double sensitivity, double FPR, double specificity) {
         this.results = results;
         this.accuracy = accuracy;
+        this.sensitivity = sensitivity;
+        this.FPR = FPR;
+        this.specificity = specificity;
     }
 
     @PrimaryKey(autoGenerate = true) long _ID;
@@ -46,6 +51,39 @@ public class Results {
 
     @ColumnInfo(name = "accuracy")
     private double accuracy;
+
+    public double getSensitivity() {
+        return sensitivity;
+    }
+
+    public void setSensitivity(double sensitivity) {
+        this.sensitivity = sensitivity;
+    }
+
+    @ColumnInfo(name = "sensitivity")
+    private double sensitivity;
+
+    public double getFPR() {
+        return FPR;
+    }
+
+    public void setFPR(double FPR) {
+        this.FPR = FPR;
+    }
+
+    @ColumnInfo(name = "FPR")
+    private double FPR;
+
+    public double getSpecificity() {
+        return specificity;
+    }
+
+    public void setSpecificity(double specificity) {
+        this.specificity = specificity;
+    }
+
+    @ColumnInfo(name = "specificity")
+    private double specificity;
 
 }
 

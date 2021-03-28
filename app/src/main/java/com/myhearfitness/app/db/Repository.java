@@ -20,14 +20,27 @@ public class Repository {
         mAllResults = mResultDAO.getAllResults();
         mLastResults = mResultDAO.getLastResults();
 
+
     }
 
     public LiveData<List<Results>> getAllResults() {
         return mAllResults;
     }
 
-    public LiveData<Results> getLast() {
-        return mLastResults;
+    public void deleteAll(){ new deleteAllWordsAsyncTask(mResultDAO).execute(); }
+
+    private static class deleteAllWordsAsyncTask extends AsyncTask<Void, Void, Void> {
+        private ResultsDAO mAsyncTaskDao;
+
+        deleteAllWordsAsyncTask(ResultsDAO dao) {
+            mAsyncTaskDao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            mAsyncTaskDao.deleteAll();
+            return null;
+        }
     }
 
     public void insert(Results result) {
