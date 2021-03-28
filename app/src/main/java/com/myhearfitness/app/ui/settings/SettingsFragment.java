@@ -83,7 +83,6 @@ public class SettingsFragment extends PreferenceFragmentCompat  implements DateP
             String path = ((MainActivity)getActivity()).setUserPic(selectedImage);
             SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             SharedPreferences.Editor editor = pref.edit();
-            System.out.println( path +"/profile.jpg");
             editor.putString("pic", path);
             editor.commit();
         }

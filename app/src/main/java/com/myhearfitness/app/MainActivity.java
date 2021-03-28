@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
 import androidx.work.Constraints;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
@@ -126,7 +128,11 @@ public class MainActivity extends AppCompatActivity {
         File directory = this.getDir("imageDir", Context.MODE_PRIVATE);
         File file = new File(directory,"profile.jpg");
         if (!file.exists()) {
-            setUserPic(imageUri);
+            String path = setUserPic(imageUri);
+            SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("pic", path);
+            editor.commit();
         }
     }
 
