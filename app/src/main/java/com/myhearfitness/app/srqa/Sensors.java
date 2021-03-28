@@ -1,21 +1,17 @@
 package com.myhearfitness.app.srqa;
 
-
-
+import android.app.Application;
 import android.content.Context;
-import android.graphics.Paint;
-import android.os.Environment;
 import android.util.Log;
+
+import com.myhearfitness.app.db.Repository;
+import com.myhearfitness.app.db.Results;
 
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,7 +32,7 @@ public class Sensors {
         List<List<String>> data = new ArrayList<>();
         InputStreamReader is;
         try {
-            is = new InputStreamReader(context.getAssets().open("datos_2.csv"));
+            is = new InputStreamReader(context.getAssets().open("datos_phy.csv"));
             BufferedReader reader = new BufferedReader(is);
             reader.readLine();
             String line;
@@ -46,14 +42,14 @@ public class Sensors {
 
             }
             //System.out.println(data.toString());
-            loadTimeSeries(data);
+            loadTimeSeries(data, context);
         } catch (IOException e) {
             e.printStackTrace();
 
         }
     }
 
-    private static void loadTimeSeries(List<List<String>> data) {
+    private static void loadTimeSeries(List<List<String>> data, Context context) {
         // load time series RR intervals
         List<Double> RR = new ArrayList<>();
 
@@ -64,8 +60,8 @@ public class Sensors {
         int w = 30;
 
         for(int i=0; i < data.size();  i++ ) {
-            RR.add(Double.parseDouble(data.get(i).get(1)));
-            D.add(Double.parseDouble(data.get(i).get(2)));
+            RR.add(Double.parseDouble(data.get(i).get(0)));
+            D.add(Double.parseDouble(data.get(i).get(1)));
         }
 
         int lw = Math.round((data.size()/w));
@@ -130,18 +126,23 @@ public class Sensors {
             measure[k]  = row;
 
         }
+        double[] prob;
+        try {
+            /*compute the logistic model*/
+            LogisticRegression.Binomial bin = LogisticRegression.binomial(measure, pos_af,0.0, 1E-10, 500);
 
-
-        /*compute the logistic model*/
-        LogisticRegression.Binomial bin = LogisticRegression.binomial(measure, pos_af,0.0, 1E-10, 500);
-
-        /*compute the estimated probability of AF*/
-        double[] prob = new double[measure.length];
-        for (int i = 0; i < measure.length; i++){
-            double[] posteriori = new   double[2];
-            bin.predict(measure[i], posteriori);
-            prob[i] = posteriori[1];
+            /*compute the estimated probability of AF*/
+            prob = new double[measure.length];
+            for (int i = 0; i < measure.length; i++){
+                double[] posteriori = new   double[2];
+                bin.predict(measure[i], posteriori);
+                prob[i] = posteriori[1];
+            }
         }
+        catch (Exception e){
+            prob = new double[measure.length];
+        }
+
 
 
         double[] Tlist = new double[(int)(1/0.001)];
@@ -223,8 +224,12 @@ public class Sensors {
             if (prob[i] > ths0 ) clasification[i] = 1;
 
         }
+        Results results = new Results(clasification, ACC, TPR, FPR, SPC);
+        Repository mRepository  = new Repository((Application) context);
+        mRepository.insert(results);
 
         }
+
 
 
 }

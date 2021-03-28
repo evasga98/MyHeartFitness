@@ -81,9 +81,9 @@ public class ProfileFragment extends Fragment {
                         switch (which){
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
-                                profileViewModel.deleteAll();
                                 Snackbar.make(v, "All results were deleted", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
+                                        .setAction("Action", null).show();
+                                profileViewModel.deleteAll();
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
