@@ -2,7 +2,6 @@ package com.myhearfitness.app.ui.home;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.widget.ImageView;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;

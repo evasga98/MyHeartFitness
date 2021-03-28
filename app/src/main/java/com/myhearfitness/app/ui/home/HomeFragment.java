@@ -1,12 +1,13 @@
 package com.myhearfitness.app.ui.home;
 
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,9 +37,10 @@ import com.myhearfitness.app.R;
 import com.myhearfitness.app.db.Results;
 import com.myhearfitness.app.ui.profile.ProfileFragment;
 
-import java.security.spec.ECField;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment {
 
         // show user profile picture
         final ImageView profile_pic = root.findViewById(R.id.imageView);
-        Bitmap bmp = ((MainActivity)getActivity()).loadImageFromStorage(path);
+        Bitmap bmp = ((MainActivity)getActivity()).loadFile(path);
         profile_pic.setImageBitmap(bmp);
 
         // button to open profile fragment
@@ -154,7 +154,26 @@ public class HomeFragment extends Fragment {
 
         if (reqCode == 1 && data != null) {
             Uri selectedFile = data.getData();
-            System.out.println(selectedFile);
+
+            // store selected pdf
+            try {
+                InputStream in = getContext().getContentResolver().openInputStream(selectedFile);
+                ContextWrapper cw = new ContextWrapper(getContext());
+                // path to /data/data/yourapp/app_data/files
+                File directory = cw.getDir("files", Context.MODE_PRIVATE);
+                File file = new File(directory,"data.pdf");
+
+                FileOutputStream out = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = in.read(buffer)) > 0) {
+                    out.write(buffer, 0, len);
+                }
+                out.close();
+            } catch (Exception e){
+
+            }
+
         }
     }
 

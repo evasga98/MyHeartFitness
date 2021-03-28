@@ -30,7 +30,6 @@ import androidx.work.WorkManager;
 import androidx.work.WorkRequest;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.myhearfitness.app.db.Repository;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,8 +48,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         navView = findViewById(R.id.nav_view);
 
+        //create files directory
+        File directory = this.getDir("files", Context.MODE_PRIVATE);
+        if(!directory.exists())
+            directory.mkdirs();
+        System.out.println();
+
         //set default user pic
-        defaultUserPic();
+        System.out.println(directory.exists());
 
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         // set default user pic
         Uri imageUri = Uri.parse("android.resource://com.myhearfitness.app/drawable/profile");
 
-        File directory = this.getDir("imageDir", Context.MODE_PRIVATE);
+        File directory = this.getDir("files", Context.MODE_PRIVATE);
         File file = new File(directory,"profile.jpg");
         if (!file.exists()) {
             String path = setUserPic(imageUri);
@@ -143,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
                 return "";
             }
             Bitmap bmp = BitmapFactory.decodeStream(input);
-            setBitmap(bmp);
             return setBitmap(bmp);
         }
         catch (FileNotFoundException e)
@@ -156,13 +160,12 @@ public class MainActivity extends AppCompatActivity {
     private String setBitmap(Bitmap bmp){
         ContextWrapper cw = new ContextWrapper(getApplicationContext());
         // path to /data/data/yourapp/app_data/imageDir
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        // Create imageDir
-        File mypath=new File(directory,"profile.jpg");
-
+        File directory = cw.getDir("files", Context.MODE_PRIVATE);
+        File file = new File(directory,"profile.jpg");
         FileOutputStream fos = null;
+
         try {
-            fos = new FileOutputStream(mypath);
+            fos = new FileOutputStream(file );
             // Use the compress method on the BitMap object to write image to the OutputStream
             bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
@@ -177,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         return directory.getAbsolutePath();
     }
 
-    public Bitmap loadImageFromStorage(String path)
+    public Bitmap loadFile(String path)
     {
         try {
             File f=new File(path, "profile.jpg");

@@ -3,7 +3,6 @@ package com.myhearfitness.app.ui.profile;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 
 import android.os.Bundle;
@@ -24,11 +23,6 @@ import com.google.android.material.snackbar.Snackbar;
 import com.myhearfitness.app.MainActivity;
 import com.myhearfitness.app.R;
 import com.myhearfitness.app.ui.settings.SettingsFragment;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 public class ProfileFragment extends Fragment {
 
@@ -53,7 +47,7 @@ public class ProfileFragment extends Fragment {
 
         //show profile picture
         final ImageView profile_pic = root.findViewById(R.id.image_profile);
-        Bitmap bmp = ((MainActivity)getActivity()).loadImageFromStorage(path);
+        Bitmap bmp = ((MainActivity)getActivity()).loadFile(path);
         profile_pic.setImageBitmap(bmp);
 
         // edit user data button

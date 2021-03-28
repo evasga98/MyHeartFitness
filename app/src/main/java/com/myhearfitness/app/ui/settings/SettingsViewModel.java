@@ -14,8 +14,6 @@ public class SettingsViewModel extends AndroidViewModel {
 
     private Repository mRepository;
 
-//    private LiveData<User> mLastWord;
-//    private LiveData<List<User>> mAllWords;
     private MutableLiveData<String> mText;
 
     public SettingsViewModel(Application application) {
@@ -24,7 +22,5 @@ public class SettingsViewModel extends AndroidViewModel {
         mText.setValue("This is edit profile fragment");
         mRepository = new Repository(application);
     }
-
-//    public void insert(User user) { mRepository.insert(user); }
 
 }
