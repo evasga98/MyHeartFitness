@@ -8,12 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-import com.myhearfitness.app.srqa.Sensors;
+import com.myhearfitness.app.srqa.AF_Classification;
 
 
 public class  AlgorithmWorker extends Worker {
-
-
 
         private NotificationManager notificationManager;
         private Context context;
@@ -31,13 +29,11 @@ public class  AlgorithmWorker extends Worker {
         @Override
         public Result doWork() {
             try {
-                Sensors.readCSV(this.context);
+                AF_Classification.readCSV(this.context);
                 return Result.success();
             } catch (Exception e) {
                 e.printStackTrace();
                 return  Result.failure();
             }
         }
-
-
     }

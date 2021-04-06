@@ -22,7 +22,7 @@ import smile.classification.LogisticRegression;
 
 import static com.myhearfitness.app.srqa.functions.*;
 
-public class Sensors {
+public class AF_Classification {
     List<Boolean> dataD;
     List<Double> dataRR;
 
