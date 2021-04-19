@@ -14,6 +14,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
@@ -37,6 +38,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
+
+import smile.glm.model.Binomial;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView navView;
@@ -165,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
         FileOutputStream fos = null;
 
         try {
-            fos = new FileOutputStream(file );
+            fos = new FileOutputStream(file);
             // Use the compress method on the BitMap object to write image to the OutputStream
             bmp.compress(Bitmap.CompressFormat.PNG, 100, fos);
         } catch (Exception e) {
@@ -192,6 +196,20 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
             return null;
         }
+    }
+    public void saveModel(Binomial bin) throws IOException {
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("files", Context.MODE_PRIVATE);
+        File f=new File(directory, "model.txt");
+        Log.d("directory", String.valueOf(directory.getName()));
+        //File file = new File(directory,"model.txt");
+        System.out.println(directory);
+        FileOutputStream fileOut = new FileOutputStream(f);
+        ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        out.writeObject(bin);
+        out.close();
+        fileOut.close();
+
     }
 
 

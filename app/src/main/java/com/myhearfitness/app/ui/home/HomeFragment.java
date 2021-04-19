@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,32 +84,35 @@ public class HomeFragment extends Fragment {
         final Spinner results_selector = root.findViewById(R.id.spinner);
         List<Integer> results_array =  new ArrayList<Integer>();
 
-        homeViewModel.getAllResults().observe(getActivity(), new Observer<List<Results>>() {
-            @Override
-            public void onChanged(List<Results> results) {
-                int id;
-                for (int i = 0; i < results.size(); i++) {
-                    results_array.add(i + 1);
-                    System.out.println(results.get(i).getAccuracy());
+        if (getActivity() == null) {
+            Log.d("Activity", "Activity context is null");
+        } else {
+            homeViewModel.getAllResults().observe(getActivity(), new Observer<List<Results>>() {
+                @Override
+                public void onChanged(List<Results> results) {
+                    int id;
+                    for (int i = 0; i < results.size(); i++) {
+                        results_array.add(i + 1);
+                        System.out.println(results.get(i).getAccuracy());
+                    }
+
+                    ArrayAdapter<Integer> results_array_adapter = new ArrayAdapter<Integer>(
+                            getActivity(), android.R.layout.simple_spinner_item, results_array);
+                    results_selector.setAdapter(results_array_adapter);
+                    results_array_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    try {
+                        id = (Integer) results_selector.getSelectedItem();
+                    } catch (Exception e) {
+                        id = 0;
+                    }
+
+                    //draw graph
+                    showResults(root, id);
                 }
+            });
 
-                ArrayAdapter<Integer> results_array_adapter = new ArrayAdapter<Integer>(
-                        getActivity(), android.R.layout.simple_spinner_item, results_array);
-                results_selector.setAdapter(results_array_adapter);
-                results_array_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                try{
-                    id = (Integer) results_selector.getSelectedItem();
-                }
-                catch (Exception e) {
-                    id = 0;
-                }
-
-                //draw graph
-                showResults(root, id);
-            }
-        });
-
+        }
         // listener for results selector
         results_selector.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -187,6 +191,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onChanged(List<Results> results) {
                 graph.removeAllSeries();
+                series = new LineGraphSeries<>();
 
                 int[] r;
                 try{
@@ -202,6 +207,10 @@ public class HomeFragment extends Fragment {
                 graph.getViewport().setXAxisBoundsManual(true);
                 graph.getViewport().setMinX(0);
                 graph.getViewport().setMaxX(100);
+
+                graph.getViewport().setYAxisBoundsManual(true);
+                graph.getViewport().setMinY(0);
+                graph.getViewport().setMaxY(1);
 
                 // enable scaling and scrolling
                 graph.getViewport().setScalable(true);
